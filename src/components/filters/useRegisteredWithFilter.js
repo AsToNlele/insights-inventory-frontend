@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { REGISTERED_CHIP, registered } from '../../Utilities/index';
+import { REGISTERED_CHIP, registered } from '../../Utilities/constants';
 
 export const registeredWithFilterState = { registeredWithFilter: [] };
 export const REGISTERED_WITH_FILTER = 'REGISTERED_WITH_FILTER';
@@ -15,8 +15,8 @@ export const useRegisteredWithFilter = ([state, dispatch] = [registeredWithFilte
     const setValue = dispatch ? (newValue) => dispatch({ type: REGISTERED_WITH_FILTER, payload: newValue }) : setStateValue;
 
     const filter = {
-        label: 'Source',
-        value: 'source-registered-with',
+        label: 'Data Collector',
+        value: 'data-collector-registered-with',
         type: 'checkbox',
         filterValues: {
             value: registeredWithValue,
@@ -25,7 +25,7 @@ export const useRegisteredWithFilter = ([state, dispatch] = [registeredWithFilte
         }
     };
     const chip = registeredWithValue?.length > 0 ? [{
-        category: 'Source',
+        category: 'Data Collector',
         type: REGISTERED_CHIP,
         chips: registered.filter(({ value }) => registeredWithValue.includes(value))
         .map(({ label, ...props }) => ({ name: label, ...props }))

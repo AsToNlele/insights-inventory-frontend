@@ -1,7 +1,14 @@
-import { useState } from 'react';
-import { OS_CHIP, operatingSystems } from '../../Utilities/index';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchOperatingSystems } from '../../store/inventory-actions';
+import {
+    buildOSFilterChip,
+    getSelectedOsFilterVersions,
+    groupOSFilterVersions,
+    onOSFilterChange,
+    toGroupSelection
+} from '../../Utilities/OperatingSystemFilterHelpers';
 
-export const operatingSystemFilterState = { operatingSystemFilter: [] };
 export const OPERATING_SYSTEM_FILTER = 'OPERATING_SYSTEM_FILTER';
 export const operatingSystemFilterReducer = (_state, { type, payload }) => ({
     ...type === OPERATING_SYSTEM_FILTER && {
@@ -9,26 +16,68 @@ export const operatingSystemFilterReducer = (_state, { type, payload }) => ({
     }
 });
 
-export const useOperatingSystemFilter = ([state, dispatch] = [operatingSystemFilterState]) => {
-    let [operatingSystemStateValue, setStateValue] = useState([]);
-    const operatingSystemValue = dispatch ? state.operatingSystemFilter : operatingSystemStateValue;
-    const setValue = dispatch ? (newValue) => dispatch({ type: OPERATING_SYSTEM_FILTER, payload: newValue }) : setStateValue;
+/**
+* OS version filter hook.
+* @param {Array} apiParams - an array containing parameters for GET /system_profile/operating_system call
+* @return {Array} An array containing config object, chips array and value setter function.
+*/
+const useOperatingSystemFilter = (apiParams = []) => {
+    const dispatch = useDispatch();
+    const operatingSystems = useSelector(({ entities }) => entities?.operatingSystems);
+    const operatingSystemsLoaded = useSelector(({ entities }) => entities?.operatingSystemsLoaded) || false;
 
-    const filter = {
+    // selected versions has the boolean set to true
+    const [selected, setSelected] = useState({});
+    const [groups, setGroups] = useState([]);
+
+    useEffect(() => {
+        dispatch(fetchOperatingSystems(apiParams));
+    }, []);
+
+    useEffect(() => {
+        const newGroups = groupOSFilterVersions(operatingSystems);
+        setGroups((operatingSystems || []).length === 0
+            ? [{ items: [{ label: 'No versions available' }] }]
+            : newGroups);
+        setSelected(
+            toGroupSelection(
+                getSelectedOsFilterVersions(selected),
+                (operatingSystems || []).map(({ value }) => value)
+            )
+        );
+    }, [operatingSystems]);
+
+    // PrimaryToolbar filter configuration
+    const config = useMemo(() => ({
         label: 'Operating System',
-        value: 'operating-system',
-        type: 'checkbox',
+        value: 'operating-system-filter',
+        type: 'group',
         filterValues: {
-            value: operatingSystemValue,
-            onChange: (_e, value) => setValue(value),
-            items: operatingSystems
+            selected,
+            groups,
+            onChange: (event, newSelection, clickedGroup, clickedItem) => {
+                setSelected(onOSFilterChange(event, newSelection, clickedGroup, clickedItem));
+            }
         }
-    };
-    const chip = operatingSystemValue?.length > 0 ? [{
-        category: 'Operating System',
-        type: OS_CHIP,
-        chips: operatingSystems.filter(({ value }) => operatingSystemValue.includes(value))
-        .map(({ label, ...props }) => ({ name: label, ...props }))
-    }] : [];
-    return [filter, chip, operatingSystemValue, setValue];
+    }), [selected, groups]);
+
+    const chips = useMemo(() => buildOSFilterChip(selected, operatingSystems), [selected, operatingSystems]);
+
+    // receives an array of OS version values, e.g., ['7.3', '9.0']
+    const setValue = useCallback((versions = []) => {
+        setSelected(
+            toGroupSelection(
+                versions,
+                operatingSystemsLoaded
+                    ? (operatingSystems || []).map(({ value }) => value)
+                    : undefined
+            )
+        );
+    }, [operatingSystemsLoaded, operatingSystems]);
+
+    const value = useMemo(() => getSelectedOsFilterVersions(selected), [selected]);
+
+    return [config, chips, value, setValue];
 };
+
+export default useOperatingSystemFilter;

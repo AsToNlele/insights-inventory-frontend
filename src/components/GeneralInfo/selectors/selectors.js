@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-
+import { registered } from '../../../Utilities/index';
+import { verifyCollectorStaleness } from '../../../Utilities/sharedFunctions';
 function safeParser(toParse, key) {
     try {
         return JSON.parse(toParse);
@@ -15,6 +16,7 @@ export const propertiesSelector = ({
     ramSize,
     disk_devices,
     sap_sids,
+    system_purpose,
     cpu_flags
 } = {}, { facts } = { }) => ({
     cpuNumber: number_of_cpus || facts?.rhsm?.CPU_CORES,
@@ -34,6 +36,7 @@ export const propertiesSelector = ({
     })
     ),
     sapIds: sap_sids,
+    systemPurpose: system_purpose?.usage,
     cpuFlags: cpu_flags
 });
 
@@ -93,4 +96,28 @@ export const collectionInformationSelector = ({
 } = {}) => ({
     client: insights_client_version,
     egg: insights_egg_version
+});
+
+export const getCollectorStatus = (collectorStaleness) =>{
+    return collectorStaleness ?
+        (verifyCollectorStaleness(collectorStaleness) !== 'Fresh' ? 'Stale' : 'Active')
+        : 'N/A';
+};
+
+export const getDefaultCollectors = (entity) =>
+    registered?.filter(reporter => reporter.label !== 'insights-client not connected')
+    .map(reporter => ({
+        name: reporter.label,
+        status: getCollectorStatus(entity?.per_reporter_staleness[reporter.value]),
+        updated: entity?.per_reporter_staleness[reporter.value]?.last_check_in,
+        details: {
+            name: reporter.idName,
+            id: entity?.[reporter.idValue]
+        }
+    }));
+
+export const systemStatus = ({
+    stale_timestamp
+} = {}) => ({
+    stale: new Date() > new Date(stale_timestamp)
 });

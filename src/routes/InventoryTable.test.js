@@ -10,7 +10,24 @@ import InventoryTable, { calculatePagination } from './InventoryTable';
 import DeleteModal from '../Utilities/DeleteModal';
 import { hosts } from '../api';
 import createXhrMock from '../Utilities/__mocks__/xhrMock';
-import { RegistryContext } from '../store';
+
+import { useWritePermissions, useGetRegistry } from '../Utilities/constants';
+import { mockSystemProfile } from '../__mocks__/hostApi';
+
+jest.mock('../Utilities/constants', () => ({
+    ...jest.requireActual('../Utilities/constants'),
+    useWritePermissions: jest.fn(() => (true)),
+    useGetRegistry: jest.fn(() => ({
+        getRegistry: () => ({})
+    }))
+}));
+
+jest.mock('@redhat-cloud-services/frontend-components-utilities/RBACHook', () => ({
+    esModule: true,
+    usePermissionsWithContext: () => ({ hasAccess: true })
+}));
+
+jest.mock('../Utilities/useFeatureFlag');
 
 describe('InventoryTable', () => {
     let mockStore;
@@ -31,7 +48,6 @@ describe('InventoryTable', () => {
         mac_addresses: ['fa:16:3e:72:a6:99', '00:00:00:00:00:00'],
         rawFacts: [],
         reporter: 'puptoo',
-        rhel_machine_id: null,
         satellite_id: null,
         stale_timestamp: '2020-10-28T12:07:14.263615+00:00',
         stale_warning_timestamp: '2020-11-04T12:07:14.263615+00:00',
@@ -78,28 +94,28 @@ describe('InventoryTable', () => {
             rows: [system1],
             sortBy: { key: 'updated', direction: 'desc' },
             tagsLoaded: false,
-            total: 1
+            total: 1,
+            operatingSystems: [],
+            operatingSystemsLoaded: true
         },
         notifications: [],
-        permissionsReducer: { loading: false, writePermissions: true },
         routerData: { params: {}, path: '/' },
         systemProfileStore: { systemProfile: { loaded: false } }
     };
 
     const mount = (children, store) => enzymeMount(
-        <RegistryContext.Provider value={{
-            getRegistry: () => ({ register: jest.fn() })
-        }}>
-            <ReactRouterDOM.MemoryRouter>
-                <Provider store={store}>
-                    {children}
-                </Provider>
-            </ReactRouterDOM.MemoryRouter>
-        </RegistryContext.Provider>
+        <ReactRouterDOM.MemoryRouter>
+            <Provider store={store}>
+                {children}
+            </Provider>
+        </ReactRouterDOM.MemoryRouter>
     );
 
     beforeEach(() => {
         mockStore = configureStore();
+        useWritePermissions.mockImplementation(() => (true));
+        useGetRegistry.mockImplementation(() => (() => ({ register: () => ({}) })));
+        mockSystemProfile.onGet().reply(200, { results: [] });
     });
 
     it('renders correctly when write permissions', async () => {
@@ -119,11 +135,8 @@ describe('InventoryTable', () => {
 
     it('renders correctly when no write permissions', async () => {
         let wrapper;
-
-        const store = mockStore({
-            ...initialStore,
-            permissionsReducer: { loading: false, writePermissions: false }
-        });
+        useWritePermissions.mockImplementation(() => (false));
+        const store = mockStore(initialStore);
 
         await act(async () => {
             wrapper = mount(<InventoryTable initialLoading={false} />, store);
@@ -236,8 +249,12 @@ describe('InventoryTable', () => {
         expect(wrapper.find('DropdownMenu')).toHaveLength(1);
 
         await act(async () => {
-            wrapper.find('DropdownItem').first().find('button').simulate('click');
+            const dropdownItems = wrapper.find('DropdownItem');
+
+            const deleteDropdown = dropdownItems.at(1);
+            deleteDropdown.find('button').simulate('click');
         });
+
         wrapper.update();
 
         expect(wrapper.find(DeleteModal).props().isModalOpen).toEqual(true);

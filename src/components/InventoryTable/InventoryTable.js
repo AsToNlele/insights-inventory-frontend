@@ -8,9 +8,10 @@ import { ErrorState } from '@redhat-cloud-services/frontend-components/ErrorStat
 import InventoryList from './InventoryList';
 import Pagination from './Pagination';
 import AccessDenied from '../../Utilities/AccessDenied';
-import { loadSystems } from '../../Utilities/index';
+import { loadSystems } from '../../Utilities/sharedFunctions';
 import isEqual from 'lodash/isEqual';
 import { entitiesLoading } from '../../store/actions';
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
  * A helper function to store props and to always return the latest state.
@@ -18,14 +19,17 @@ import { entitiesLoading } from '../../store/actions';
  * to get the latest props and not the props at the time of when the function is
  * being wrapped in callback.
  */
-const propsCache = () => {
+const inventoryCache = () => {
     let cache = {};
 
-    const updateProps = (props) => { cache = props; };
+    const updateProps = (props) => { cache = cloneDeep({ ...cache, props }); };
 
-    const getProps = () => cache;
+    const updateParams = (params) => { cache = cloneDeep({ ...cache, params }); };
 
-    return { updateProps, getProps };
+    const getProps = () => cache.props;
+    const getParams = () => cache.params;
+
+    return { updateProps, updateParams, getProps, getParams };
 };
 
 /**
@@ -44,7 +48,6 @@ const InventoryTable = forwardRef(({ // eslint-disable-line react/display-name
     total: propsTotal,
     page: propsPage,
     perPage: propsPerPage,
-    filters,
     showTags,
     sortBy: propsSortBy,
     customFilters,
@@ -60,6 +63,11 @@ const InventoryTable = forwardRef(({ // eslint-disable-line react/display-name
     initialLoading,
     ignoreRefresh,
     showTagModal,
+    activeFiltersConfig,
+    tableProps,
+    isRbacEnabled,
+    hasCheckbox,
+    onRowClick,
     ...props
 }, ref) => {
     const hasItems = Boolean(items);
@@ -68,12 +76,10 @@ const InventoryTable = forwardRef(({ // eslint-disable-line react/display-name
     ));
     const page = useSelector(({ entities: { page: invPage } }) => (
         hasItems ? propsPage : (invPage || 1)
-    )
-    , shallowEqual);
+    ), shallowEqual);
     const perPage = useSelector(({ entities: { perPage: invPerPage } }) => (
         hasItems ? propsPerPage : (invPerPage || 50)
-    )
-    , shallowEqual);
+    ), shallowEqual);
     const total = useSelector(({ entities: { total: invTotal } }) => {
         if (hasItems) {
             return propsTotal !== undefined ? propsTotal : items?.length;
@@ -109,7 +115,7 @@ const InventoryTable = forwardRef(({ // eslint-disable-line react/display-name
     const dispatch = useDispatch();
     const store = useStore();
 
-    const cache = useRef(propsCache());
+    const cache = useRef(inventoryCache());
     cache.current.updateProps({
         page,
         perPage,
@@ -119,19 +125,20 @@ const InventoryTable = forwardRef(({ // eslint-disable-line react/display-name
         showTags,
         getEntities,
         customFilters,
-        hasItems
+        hasItems,
+        activeFiltersConfig
     });
 
     /**
      * If consumer wants to change data they can call this function via component ref.
      * @param {*} options new options to be applied, like pagination, filters, etc.
      */
-    const onRefreshData = (options = {}, disableOnRefresh) => {
+    const onRefreshData = (options = {}, disableOnRefresh, forceRefresh = false) => {
         const { activeFilters } = store.getState().entities;
         const cachedProps = cache.current?.getProps() || {};
         const currPerPage = options?.per_page || options?.perPage || cachedProps.perPage;
 
-        const params = {
+        const newParams = {
             page: cachedProps.page,
             per_page: currPerPage,
             items: cachedProps.items,
@@ -139,29 +146,35 @@ const InventoryTable = forwardRef(({ // eslint-disable-line react/display-name
             hideFilters: cachedProps.hideFilters,
             filters: activeFilters,
             hasItems: cachedProps.hasItems,
-            ...cachedProps.customFilters,
+            //RHIF-246: Compliance app depends on activeFiltersConfig to apply its filters.
+            activeFiltersConfig: cachedProps.activeFiltersConfig,
+            ...customFilters,
             ...options
         };
 
-        if (onRefresh && !disableOnRefresh) {
-            dispatch(entitiesLoading());
-            onRefresh(params, (options) => {
+        const cachedParams = cache.current.getParams();
+        if (!isEqual(cachedParams, newParams) || forceRefresh) {
+            cache.current.updateParams(newParams);
+            if (onRefresh && !disableOnRefresh) {
+                dispatch(entitiesLoading());
+                onRefresh(newParams, (options) => {
+                    dispatch(
+                        loadSystems(
+                            { ...newParams, ...options },
+                            cachedProps.showTags,
+                            cachedProps.getEntities
+                        )
+                    );
+                });
+            } else {
                 dispatch(
                     loadSystems(
-                        { ...params, ...options },
+                        newParams,
                         cachedProps.showTags,
                         cachedProps.getEntities
                     )
                 );
-            });
-        } else {
-            dispatch(
-                loadSystems(
-                    params,
-                    cachedProps.showTags,
-                    cachedProps.getEntities
-                )
-            );
+            }
         }
     };
 
@@ -188,7 +201,6 @@ const InventoryTable = forwardRef(({ // eslint-disable-line react/display-name
                     customFilters={customFilters}
                     hasAccess={hasAccess}
                     items={ items }
-                    filters={ filters }
                     hasItems={ hasItems }
                     total={ pagination.total }
                     page={ pagination.page }
@@ -201,12 +213,15 @@ const InventoryTable = forwardRef(({ // eslint-disable-line react/display-name
                     paginationProps={paginationProps}
                     loaded={loaded}
                     showTagModal={showTagModal}
-                    activeFiltersConfig={{ deleteTitle: 'Reset filters', ...props.activeFiltersConfig }}
+                    activeFiltersConfig={{ deleteTitle: 'Reset filters', ...activeFiltersConfig }}
                 >
                     { children }
                 </EntityTableToolbar>
                 <InventoryList
                     { ...props }
+                    hasCheckbox={hasCheckbox}
+                    onRowClick={onRowClick}
+                    tableProps={tableProps}
                     customFilters={customFilters}
                     hasAccess={hasAccess}
                     ref={ref}
@@ -246,7 +261,6 @@ InventoryTable.propTypes = {
     total: PropTypes.number,
     page: PropTypes.number,
     perPage: PropTypes.number,
-    filters: PropTypes.any,
     showTags: PropTypes.bool,
     getTags: PropTypes.func,
     sortBy: PropTypes.object,
@@ -261,7 +275,11 @@ InventoryTable.propTypes = {
     initialLoading: PropTypes.bool,
     ignoreRefresh: PropTypes.bool,
     showTagModal: PropTypes.bool,
-    activeFiltersConfig: PropTypes.object
+    activeFiltersConfig: PropTypes.object,
+    tableProps: PropTypes.object,
+    isRbacEnabled: PropTypes.bool,
+    hasCheckbox: PropTypes.bool,
+    onRowClick: PropTypes.func
 };
 
 export default InventoryTable;

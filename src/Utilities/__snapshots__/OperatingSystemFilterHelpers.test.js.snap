@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`buildOSFilterChip returns two version chips 1`] = `
+Array [
+  Object {
+    "category": "Operating System",
+    "chips": Array [
+      Object {
+        "name": "RHEL 7.0",
+        "value": "7.0",
+      },
+      Object {
+        "name": "RHEL 8.5",
+        "value": "8.5",
+      },
+      Object {
+        "name": "RHEL 8.10",
+        "value": "8.10",
+      },
+    ],
+    "type": "operating_system",
+  },
+]
+`;
+
+exports[`groupOSFilterVersions returns group configuration with 3 groups and 4 values 1`] = `
+Array [
+  Object {
+    "groupSelectable": true,
+    "items": Array [
+      Object {
+        "label": "RHEL 8.10",
+        "type": "checkbox",
+        "value": "8.10",
+      },
+      Object {
+        "label": "RHEL 8.5",
+        "type": "checkbox",
+        "value": "8.5",
+      },
+    ],
+    "label": "RHEL 8",
+    "type": "checkbox",
+    "value": "8",
+  },
+  Object {
+    "groupSelectable": true,
+    "items": Array [
+      Object {
+        "label": "RHEL 7.0",
+        "type": "checkbox",
+        "value": "7.0",
+      },
+    ],
+    "label": "RHEL 7",
+    "type": "checkbox",
+    "value": "7",
+  },
+  Object {
+    "groupSelectable": true,
+    "items": Array [
+      Object {
+        "label": "RHEL 6.10",
+        "type": "checkbox",
+        "value": "6.10",
+      },
+      Object {
+        "label": "RHEL 6.9",
+        "type": "checkbox",
+        "value": "6.9",
+      },
+    ],
+    "label": "RHEL 6",
+    "type": "checkbox",
+    "value": "6",
+  },
+]
+`;

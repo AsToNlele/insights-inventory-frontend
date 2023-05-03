@@ -10,21 +10,11 @@ import { createPromise as promiseMiddleware } from 'redux-promise-middleware';
 import { BrowserRouter as Router } from 'react-router-dom';
 import toJson from 'enzyme-to-json';
 import { ConditionalFilter } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
-import * as actions from '../../Utilities/constants';
+import * as loadSystems from '../../Utilities/sharedFunctions';
+import { mockSystemProfile } from '../../__mocks__/hostApi';
+import useFeatureFlag from '../../Utilities/useFeatureFlag';
 
-jest.mock('../../store/actions', () => {
-    const actions = jest.requireActual('../../store/actions');
-    const { ACTION_TYPES } = jest.requireActual('../../store/action-types');
-    return {
-        __esModule: true,
-        ...actions,
-        loadEntities: () => ({
-            type: ACTION_TYPES.LOAD_ENTITIES,
-            payload: () => Promise.resolve({}),
-            meta: { showTags: undefined }
-        })
-    };
-});
+jest.mock('../../Utilities/useFeatureFlag');
 
 describe('InventoryTable', () => {
     let initialState;
@@ -49,7 +39,9 @@ describe('InventoryTable', () => {
                 }
             }
         };
-        spy = jest.spyOn(actions, 'loadSystems').mockImplementation(() => ({ type: 'reload' }));
+
+        spy = jest.spyOn(loadSystems, 'loadSystems').mockImplementation(() => ({ type: 'reload' }));
+        mockSystemProfile.onGet().reply(200, { results: [] });
     });
 
     afterEach(() => {
@@ -219,6 +211,7 @@ describe('InventoryTable', () => {
         });
 
         it('should disable only one filter', () => {
+            useFeatureFlag.mockReturnValue(true);
             const store = mockStore(initialState);
             const wrapper = mount(<Provider store={ store }>
                 <Router>
@@ -226,8 +219,15 @@ describe('InventoryTable', () => {
                 </Router>
             </Provider>);
 
-            expect(wrapper.find(ConditionalFilter).props().items.map(({ value }) => value)).toEqual(
-                ['stale-status', 'operating-system', 'source-registered-with', 'tags']
+            expect(wrapper.find(ConditionalFilter).props().items.map(({ label }) => label)).toEqual(
+                ['Status',
+                    'Operating System',
+                    'Data Collector',
+                    'RHC status',
+                    'System Update Method',
+                    'Last seen',
+                    'Group',
+                    'Tags']
             );
         });
 

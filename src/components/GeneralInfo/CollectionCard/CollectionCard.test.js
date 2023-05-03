@@ -7,6 +7,16 @@ import configureStore from 'redux-mock-store';
 import { collectInfoTest } from '../../../__mocks__/selectors';
 import { Tooltip } from '@patternfly/react-core';
 
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useLocation: () => ({
+        pathname: 'localhost:3000/example/path'
+    }),
+    useHistory: () => ({
+        push: () => undefined
+    })
+}));
+
 describe('CollectionCard', () => {
     let initialState;
     let mockStore;
@@ -58,8 +68,7 @@ describe('CollectionCard', () => {
         'hasLastCheckIn',
         'hasRegistered',
         'hasInsightsId',
-        'hasReporter',
-        'hasMachineId'
+        'hasReporter'
     ].map((item) => it(`should not render ${item}`, () => {
         const store = mockStore(initialState);
         const wrapper = render(<CollectionCard store={ store } {...{ [item]: false }} />);

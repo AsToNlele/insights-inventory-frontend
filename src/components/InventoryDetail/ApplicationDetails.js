@@ -1,74 +1,93 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useHistory } from 'react-router-dom';
-import { Tabs, Tab } from '@patternfly/react-core';
-import { detailSelect } from '../../store/actions';
+import { useSelector, useStore } from 'react-redux';
+import { Tabs, Tab, Spinner, TabContent } from '@patternfly/react-core';
+import { verifyCulledInsightsClient } from '../../Utilities/sharedFunctions';
+import { getFact } from './helpers';
+import { NotConnected } from '@redhat-cloud-services/frontend-components/NotConnected';
 
 /**
  * Component that renders tabs for each application detail and handles clicking on each item.
  * @param {*} props onTabSelect can be used to notify parent component that detail has been selected.
  */
-const ApplicationDetails = ({ onTabSelect, appList, ...props }) => {
-    const { search } = useLocation();
-    const history = useHistory();
-    const dispatch = useDispatch();
-    const searchParams = new URLSearchParams(search);
-    const items = useSelector(({ entityDetails }) => entityDetails?.activeApps || [])
-    .filter(({ isVisible }) => isVisible !== false);
-    const activeApp = useSelector(({ entityDetails }) => entityDetails?.activeApp);
+const ApplicationDetails = ({ onTabSelect, appList, activeApp, inventoryId, entity, ...props }) => {
+    const store = useStore();
+    const items = useSelector(({ entityDetails }) => {
+        return (entityDetails?.activeApps || appList || [])
+        .filter(({ isVisible }) => isVisible !== false)
+        .map(app => ({
+            ...app,
+            tabRef: React.createRef()
+        }));
+    });
     const disabledApps = useSelector(({ systemProfileStore }) => systemProfileStore?.disabledApps);
-    const defaultApp = activeApp?.appName || appList?.find(({ pageId, name }) => items?.[0]?.name === (
-        pageId || name))?.name || items?.[0]?.name;
-    let applications = appList || items;
-    const [activeTabs, setActiveTabs] = useState(applications);
+    const [activeTabs, setActiveTabs] = useState(items);
+    const [currentApp, setCurrentApp] = useState(activeApp || items?.[0]?.name);
 
     useEffect(() => {
-        /**
-         * Initialize first inventory detail type
-         */
-        const appName = searchParams.get('appName');
-        if (appName) {
-            dispatch(detailSelect(appName));
-        }
-    }, []);
-
-    useEffect(() => {
-        const filteredResult = applications.filter(app => !disabledApps?.includes(app.name));
+        const filteredResult = items.filter(app => !disabledApps?.includes(app.name));
         if (filteredResult !== 0 && typeof filteredResult !== undefined) {
             setActiveTabs(filteredResult);
         }
         else {
-            setActiveTabs(applications);
+            setActiveTabs(items);
         }
     }, [disabledApps]);
 
+    const isDisconnected = verifyCulledInsightsClient(getFact('per_reporter_staleness', entity));
+
     return (
         <React.Fragment>
-            {
-                applications?.length > 1 &&
+            <section className='pf-u-pr-lg pf-u-pl-lg pf-u-background-color-100-on-md'>
                 <Tabs
                     {...props}
-                    activeKey={ defaultApp }
-                    onSelect={ (event, item) => {
+                    activeKey={currentApp}
+                    onSelect={(event, item) => {
                         const activeItem = activeTabs.find(oneApp => oneApp.name === item);
                         if (onTabSelect) {
-                            onTabSelect(event, item, activeItem);
-                        } else {
-                            searchParams.set('appName', activeItem.name);
-                            history.push({ search: searchParams.toString() });
+                            onTabSelect(event, item, activeItem.name || item);
                         }
 
-                        dispatch(detailSelect(activeItem.name));
-                    } }
-                    isFilled
+                        setCurrentApp(activeItem.name);
+                    }}
                     className="ins-c-inventory-detail__app-tabs"
+                    inset={'insetMd'}
                 >
-                    { activeTabs?.map((item, key) => (
-                        <Tab key={ key } eventKey={ item.name } title={ item.title }></Tab>
-                    )) }
+                    {activeTabs?.map((item, key) => (
+                        <Tab
+                            key={key}
+                            eventKey={item.name}
+                            title={item.title}
+                            tabContentRef={item.tabRef}
+                        />
+                    ))}
                 </Tabs>
-            }
+            </section>
+            <section>
+                {activeTabs?.length && activeTabs?.map((item) => {
+                    const Cmp = item.component;
+                    return (
+                        <TabContent
+                            eventKey={item.name}
+                            id={item.name}
+                            ref={item.tabRef}
+                            aria-label={item.title}
+                            key={item.name}
+                        >
+                            {item.name === currentApp && <Suspense fallback={Spinner}>
+                                <section className='pf-c-page__main-section'>
+                                    {isDisconnected && ['patch', 'vulnerabilities', 'advisor']
+                                    .includes(currentApp) ? <NotConnected/>
+                                        : <Cmp
+                                            inventoryId={inventoryId}
+                                            store={store}
+                                        />}
+                                </section>
+                            </Suspense>}
+                        </TabContent>
+                    );}
+                )}
+            </section>
         </React.Fragment>
     );
 };
@@ -79,7 +98,10 @@ ApplicationDetails.propTypes = {
         name: PropTypes.string.isRequired,
         pageId: PropTypes.string
     })),
-    onTabSelect: PropTypes.func
+    onTabSelect: PropTypes.func,
+    activeApp: PropTypes.string.isRequired,
+    inventoryId: PropTypes.string.isRequired,
+    entity: PropTypes.object
 };
 
 export default ApplicationDetails;

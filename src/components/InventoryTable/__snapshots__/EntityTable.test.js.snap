@@ -3,8 +3,8 @@
 exports[`EntityTable DOM should render correctly - compact 1`] = `
 <table
   aria-label="Host inventory"
-  class="ins-c-entity-table pf-c-table pf-m-grid-md pf-m-compact"
-  data-ouia-component-id="OUIA-Generated-Table-22"
+  class="ins-c-entity-table pf-c-table pf-m-grid-md pf-m-compact pf-m-sticky-header"
+  data-ouia-component-id="OUIA-Generated-Table-26"
   data-ouia-component-type="PF4/Table"
   data-ouia-safe="true"
   role="grid"
@@ -13,8 +13,9 @@ exports[`EntityTable DOM should render correctly - compact 1`] = `
     class=""
   >
     <tr
+      aria-label=""
       class=""
-      data-ouia-component-id="OUIA-Generated-TableRow-35"
+      data-ouia-component-id="OUIA-Generated-TableRow-39"
       data-ouia-component-type="PF4/TableRow"
       data-ouia-safe="true"
     >
@@ -23,11 +24,13 @@ exports[`EntityTable DOM should render correctly - compact 1`] = `
         data-key="0"
         data-label=""
       >
-        <input
-          aria-label="Select all rows"
-          name="check-all"
-          type="checkbox"
-        />
+        <label>
+          <input
+            aria-label="Select all rows"
+            name="check-all"
+            type="checkbox"
+          />
+        </label>
       </td>
       <th
         aria-sort="none"
@@ -75,8 +78,9 @@ exports[`EntityTable DOM should render correctly - compact 1`] = `
     role="rowgroup"
   >
     <tr
+      aria-label=""
       class=""
-      data-ouia-component-id="OUIA-Generated-TableRow-36"
+      data-ouia-component-id="OUIA-Generated-TableRow-40"
       data-ouia-component-type="PF4/TableRow"
       data-ouia-safe="true"
     >
@@ -84,11 +88,13 @@ exports[`EntityTable DOM should render correctly - compact 1`] = `
         class="pf-c-table__check"
         data-key="0"
       >
-        <input
-          aria-label="Select row 0"
-          name="checkrow0"
-          type="checkbox"
-        />
+        <label>
+          <input
+            aria-label="Select row 0"
+            name="checkrow0"
+            type="checkbox"
+          />
+        </label>
       </td>
       <td
         class=""
@@ -96,7 +102,7 @@ exports[`EntityTable DOM should render correctly - compact 1`] = `
         data-label="One"
       >
         <div
-          class="ins-composed-col"
+          class="ins-composed-col sentry-mask data-hj-suppress"
         >
           <div />
           <div
@@ -120,6 +126,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
 <Table
   aria-label="Host inventory"
   borders={true}
+  canCollapseAll={false}
   canSelectAll={true}
   canSortFavorites={true}
   cells={
@@ -127,6 +134,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
       Object {
         "cellFormatters": Array [],
         "key": "one",
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -135,6 +143,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
       Object {
         "cellFormatters": Array [],
         "key": "one",
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -143,6 +152,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
       Object {
         "cellFormatters": Array [],
         "key": "one",
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -151,6 +161,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
       Object {
         "cellFormatters": Array [],
         "key": "one",
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -159,6 +170,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
       Object {
         "cellFormatters": Array [],
         "key": "one",
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -167,6 +179,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
       Object {
         "cellFormatters": Array [],
         "key": "one",
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -175,6 +188,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
     ]
   }
   className="ins-c-entity-table"
+  collapseAllAriaLabel=""
   contentId="expanded-content"
   dropdownDirection="down"
   dropdownPosition="right"
@@ -182,7 +196,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
   gridBreakPoint="grid-lg"
   isHeaderSelectDisabled={false}
   isNested={false}
-  isStickyHeader={false}
+  isStickyHeader={true}
   isTreeTable={false}
   onSelect={[Function]}
   onSort={[Function]}
@@ -216,7 +230,7 @@ exports[`EntityTable DOM should render correctly - grid breakpoints 1`] = `
       "index": 0,
     }
   }
-  variant={null}
+  variant="compact"
 />
 `;
 
@@ -224,6 +238,7 @@ exports[`EntityTable DOM should render correctly - is expandable 1`] = `
 <Table
   aria-label="Host inventory"
   borders={true}
+  canCollapseAll={false}
   canSelectAll={true}
   canSortFavorites={true}
   cells={
@@ -234,6 +249,7 @@ exports[`EntityTable DOM should render correctly - is expandable 1`] = `
         ],
         "key": "one",
         "renderFunc": [Function],
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -242,6 +258,7 @@ exports[`EntityTable DOM should render correctly - is expandable 1`] = `
     ]
   }
   className="ins-c-entity-table"
+  collapseAllAriaLabel=""
   contentId="expanded-content"
   dropdownDirection="down"
   dropdownPosition="right"
@@ -249,7 +266,7 @@ exports[`EntityTable DOM should render correctly - is expandable 1`] = `
   gridBreakPoint="grid-md"
   isHeaderSelectDisabled={false}
   isNested={false}
-  isStickyHeader={false}
+  isStickyHeader={true}
   isTreeTable={false}
   onCollapse={[Function]}
   onSelect={[Function]}
@@ -266,7 +283,7 @@ exports[`EntityTable DOM should render correctly - is expandable 1`] = `
         "cells": Array [
           <React.Fragment>
             <div
-              className="ins-composed-col"
+              className="ins-composed-col sentry-mask data-hj-suppress"
             >
               <div />
               <div
@@ -296,7 +313,7 @@ exports[`EntityTable DOM should render correctly - is expandable 1`] = `
       "index": 1,
     }
   }
-  variant={null}
+  variant="compact"
 />
 `;
 
@@ -311,13 +328,14 @@ exports[`EntityTable DOM should render correctly - no data 1`] = `
   showActions={false}
   showHealth={false}
   tableProps={Object {}}
+  variant="compact"
 />
 `;
 
 exports[`EntityTable DOM should render correctly - no rows 1`] = `
 <table
   aria-label="Host inventory"
-  class="ins-c-entity-table pf-c-table pf-m-grid-md"
+  class="ins-c-entity-table pf-c-table pf-m-grid-md pf-m-compact pf-m-sticky-header"
   data-ouia-component-id="OUIA-Generated-Table-4"
   data-ouia-component-type="PF4/Table"
   data-ouia-safe="true"
@@ -327,6 +345,7 @@ exports[`EntityTable DOM should render correctly - no rows 1`] = `
     class=""
   >
     <tr
+      aria-label=""
       class=""
       data-ouia-component-id="OUIA-Generated-TableRow-17"
       data-ouia-component-type="PF4/TableRow"
@@ -347,6 +366,7 @@ exports[`EntityTable DOM should render correctly - no rows 1`] = `
     role="rowgroup"
   >
     <tr
+      aria-label=""
       class=""
       data-ouia-component-id="OUIA-Generated-TableRow-18"
       data-ouia-component-type="PF4/TableRow"
@@ -356,37 +376,42 @@ exports[`EntityTable DOM should render correctly - no rows 1`] = `
         class=""
         colspan="1"
         data-key="0"
-        data-label="One"
       >
         <div
-          class="ins-c-table__empty"
+          class="pf-c-empty-state"
+          data-ouia-component-id="empty-state"
+          data-ouia-component-type="PF4/EmptyState"
+          data-ouia-safe="true"
         >
-           
           <div
-            class="pf-l-bullseye"
+            class="pf-c-empty-state__content"
           >
-            <div
-              class="pf-c-empty-state"
+            <svg
+              aria-hidden="true"
+              class="pf-c-empty-state__icon"
+              fill="currentColor"
+              height="1em"
+              role="img"
+              style="vertical-align:-0.125em"
+              viewBox="0 0 512 512"
+              width="1em"
             >
-              <div
-                class="pf-c-empty-state__content"
-              >
-                <h5
-                  class="pf-c-title pf-m-lg"
-                  data-ouia-component-id="OUIA-Generated-Title-1"
-                  data-ouia-component-type="PF4/Title"
-                  data-ouia-safe="true"
-                >
-                  No matching systems found
-                </h5>
-                <div
-                  class="pf-c-empty-state__body"
-                >
-                  This filter criteria matches no systems. 
-                  <br />
-                   Try changing your filter settings.
-                </div>
-              </div>
+              <path
+                d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+              />
+            </svg>
+            <h5
+              class="pf-c-title pf-m-lg"
+              data-ouia-component-id="OUIA-Generated-Title-1"
+              data-ouia-component-type="PF4/Title"
+              data-ouia-safe="true"
+            >
+              No matching systems found
+            </h5>
+            <div
+              class="pf-c-empty-state__body"
+            >
+              To continue, edit your filter settings and try again
             </div>
           </div>
         </div>
@@ -401,6 +426,7 @@ exports[`EntityTable DOM should render correctly - with actions 1`] = `
   actions={Array []}
   aria-label="Host inventory"
   borders={true}
+  canCollapseAll={false}
   canSelectAll={true}
   canSortFavorites={true}
   cells={
@@ -409,6 +435,7 @@ exports[`EntityTable DOM should render correctly - with actions 1`] = `
         "cellFormatters": Array [],
         "key": "one",
         "renderFunc": [Function],
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -417,6 +444,7 @@ exports[`EntityTable DOM should render correctly - with actions 1`] = `
     ]
   }
   className="ins-c-entity-table"
+  collapseAllAriaLabel=""
   contentId="expanded-content"
   dropdownDirection="down"
   dropdownPosition="right"
@@ -424,7 +452,7 @@ exports[`EntityTable DOM should render correctly - with actions 1`] = `
   gridBreakPoint="grid-md"
   isHeaderSelectDisabled={false}
   isNested={false}
-  isStickyHeader={false}
+  isStickyHeader={true}
   isTreeTable={false}
   onSelect={[Function]}
   onSort={[Function]}
@@ -440,7 +468,7 @@ exports[`EntityTable DOM should render correctly - with actions 1`] = `
         "cells": Array [
           <React.Fragment>
             <div
-              className="ins-composed-col"
+              className="ins-composed-col sentry-mask data-hj-suppress"
             >
               <div />
               <div
@@ -470,14 +498,14 @@ exports[`EntityTable DOM should render correctly - with actions 1`] = `
       "index": 0,
     }
   }
-  variant={null}
+  variant="compact"
 />
 `;
 
 exports[`EntityTable DOM should render correctly - with customNoSystemsTable 1`] = `
 <table
   aria-label="Host inventory"
-  class="ins-c-entity-table pf-c-table pf-m-grid-md"
+  class="ins-c-entity-table pf-c-table pf-m-grid-md pf-m-compact pf-m-sticky-header"
   data-ouia-component-id="OUIA-Generated-Table-6"
   data-ouia-component-type="PF4/Table"
   data-ouia-safe="true"
@@ -487,6 +515,7 @@ exports[`EntityTable DOM should render correctly - with customNoSystemsTable 1`]
     class=""
   >
     <tr
+      aria-label=""
       class=""
       data-ouia-component-id="OUIA-Generated-TableRow-19"
       data-ouia-component-type="PF4/TableRow"
@@ -507,6 +536,7 @@ exports[`EntityTable DOM should render correctly - with customNoSystemsTable 1`]
     role="rowgroup"
   >
     <tr
+      aria-label=""
       class=""
       data-ouia-component-id="OUIA-Generated-TableRow-20"
       data-ouia-component-type="PF4/TableRow"
@@ -516,7 +546,6 @@ exports[`EntityTable DOM should render correctly - with customNoSystemsTable 1`]
         class=""
         colspan="1"
         data-key="0"
-        data-label="One"
       >
         <div>
           NO SYSTEMS
@@ -531,6 +560,7 @@ exports[`EntityTable DOM should render correctly - without checkbox 1`] = `
 <Table
   aria-label="Host inventory"
   borders={true}
+  canCollapseAll={false}
   canSelectAll={true}
   canSortFavorites={true}
   cells={
@@ -539,6 +569,7 @@ exports[`EntityTable DOM should render correctly - without checkbox 1`] = `
         "cellFormatters": Array [],
         "key": "one",
         "renderFunc": [Function],
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -547,6 +578,7 @@ exports[`EntityTable DOM should render correctly - without checkbox 1`] = `
     ]
   }
   className="ins-c-entity-table"
+  collapseAllAriaLabel=""
   contentId="expanded-content"
   dropdownDirection="down"
   dropdownPosition="right"
@@ -554,7 +586,7 @@ exports[`EntityTable DOM should render correctly - without checkbox 1`] = `
   gridBreakPoint="grid-md"
   isHeaderSelectDisabled={false}
   isNested={false}
-  isStickyHeader={false}
+  isStickyHeader={true}
   isTreeTable={false}
   onSort={[Function]}
   ouiaSafe={true}
@@ -569,7 +601,7 @@ exports[`EntityTable DOM should render correctly - without checkbox 1`] = `
         "cells": Array [
           <React.Fragment>
             <div
-              className="ins-composed-col"
+              className="ins-composed-col sentry-mask data-hj-suppress"
             >
               <div />
               <div
@@ -599,15 +631,15 @@ exports[`EntityTable DOM should render correctly - without checkbox 1`] = `
       "index": -1,
     }
   }
-  variant={null}
+  variant="compact"
 />
 `;
 
 exports[`EntityTable DOM should render correctly 1`] = `
 <table
   aria-label="Host inventory"
-  class="ins-c-entity-table pf-c-table pf-m-grid-md"
-  data-ouia-component-id="OUIA-Generated-Table-26"
+  class="ins-c-entity-table pf-c-table pf-m-grid-md pf-m-compact pf-m-sticky-header"
+  data-ouia-component-id="OUIA-Generated-Table-30"
   data-ouia-component-type="PF4/Table"
   data-ouia-safe="true"
   role="grid"
@@ -616,8 +648,9 @@ exports[`EntityTable DOM should render correctly 1`] = `
     class=""
   >
     <tr
+      aria-label=""
       class=""
-      data-ouia-component-id="OUIA-Generated-TableRow-39"
+      data-ouia-component-id="OUIA-Generated-TableRow-43"
       data-ouia-component-type="PF4/TableRow"
       data-ouia-safe="true"
     >
@@ -626,11 +659,13 @@ exports[`EntityTable DOM should render correctly 1`] = `
         data-key="0"
         data-label=""
       >
-        <input
-          aria-label="Select all rows"
-          name="check-all"
-          type="checkbox"
-        />
+        <label>
+          <input
+            aria-label="Select all rows"
+            name="check-all"
+            type="checkbox"
+          />
+        </label>
       </td>
       <th
         aria-sort="none"
@@ -678,8 +713,9 @@ exports[`EntityTable DOM should render correctly 1`] = `
     role="rowgroup"
   >
     <tr
+      aria-label=""
       class=""
-      data-ouia-component-id="OUIA-Generated-TableRow-40"
+      data-ouia-component-id="OUIA-Generated-TableRow-44"
       data-ouia-component-type="PF4/TableRow"
       data-ouia-safe="true"
     >
@@ -687,11 +723,13 @@ exports[`EntityTable DOM should render correctly 1`] = `
         class="pf-c-table__check"
         data-key="0"
       >
-        <input
-          aria-label="Select row 0"
-          name="checkrow0"
-          type="checkbox"
-        />
+        <label>
+          <input
+            aria-label="Select row 0"
+            name="checkrow0"
+            type="checkbox"
+          />
+        </label>
       </td>
       <td
         class=""
@@ -699,7 +737,7 @@ exports[`EntityTable DOM should render correctly 1`] = `
         data-label="One"
       >
         <div
-          class="ins-composed-col"
+          class="ins-composed-col sentry-mask data-hj-suppress"
         >
           <div />
           <div
@@ -725,6 +763,7 @@ exports[`EntityTable DOM sort by should render correctly - is expandable 1`] = `
 <Table
   aria-label="Host inventory"
   borders={true}
+  canCollapseAll={false}
   canSelectAll={true}
   canSortFavorites={true}
   cells={
@@ -735,6 +774,7 @@ exports[`EntityTable DOM sort by should render correctly - is expandable 1`] = `
         ],
         "key": "one",
         "renderFunc": [Function],
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -743,6 +783,7 @@ exports[`EntityTable DOM sort by should render correctly - is expandable 1`] = `
     ]
   }
   className="ins-c-entity-table"
+  collapseAllAriaLabel=""
   contentId="expanded-content"
   dropdownDirection="down"
   dropdownPosition="right"
@@ -750,7 +791,7 @@ exports[`EntityTable DOM sort by should render correctly - is expandable 1`] = `
   gridBreakPoint="grid-md"
   isHeaderSelectDisabled={false}
   isNested={false}
-  isStickyHeader={false}
+  isStickyHeader={true}
   isTreeTable={false}
   onCollapse={[Function]}
   onSelect={[Function]}
@@ -767,7 +808,7 @@ exports[`EntityTable DOM sort by should render correctly - is expandable 1`] = `
         "cells": Array [
           <React.Fragment>
             <div
-              className="ins-composed-col"
+              className="ins-composed-col sentry-mask data-hj-suppress"
             >
               <div />
               <div
@@ -797,7 +838,7 @@ exports[`EntityTable DOM sort by should render correctly - is expandable 1`] = `
       "index": 2,
     }
   }
-  variant={null}
+  variant="compact"
 />
 `;
 
@@ -805,6 +846,7 @@ exports[`EntityTable DOM sort by should render correctly - without checkbox 1`] 
 <Table
   aria-label="Host inventory"
   borders={true}
+  canCollapseAll={false}
   canSelectAll={true}
   canSortFavorites={true}
   cells={
@@ -813,6 +855,7 @@ exports[`EntityTable DOM sort by should render correctly - without checkbox 1`] 
         "cellFormatters": Array [],
         "key": "one",
         "renderFunc": [Function],
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -821,6 +864,7 @@ exports[`EntityTable DOM sort by should render correctly - without checkbox 1`] 
     ]
   }
   className="ins-c-entity-table"
+  collapseAllAriaLabel=""
   contentId="expanded-content"
   dropdownDirection="down"
   dropdownPosition="right"
@@ -828,7 +872,7 @@ exports[`EntityTable DOM sort by should render correctly - without checkbox 1`] 
   gridBreakPoint="grid-md"
   isHeaderSelectDisabled={false}
   isNested={false}
-  isStickyHeader={false}
+  isStickyHeader={true}
   isTreeTable={false}
   onSort={[Function]}
   ouiaSafe={true}
@@ -843,7 +887,7 @@ exports[`EntityTable DOM sort by should render correctly - without checkbox 1`] 
         "cells": Array [
           <React.Fragment>
             <div
-              className="ins-composed-col"
+              className="ins-composed-col sentry-mask data-hj-suppress"
             >
               <div />
               <div
@@ -873,7 +917,7 @@ exports[`EntityTable DOM sort by should render correctly - without checkbox 1`] 
       "index": 0,
     }
   }
-  variant={null}
+  variant="compact"
 />
 `;
 
@@ -881,6 +925,7 @@ exports[`EntityTable DOM sort by should render correctly 1`] = `
 <Table
   aria-label="Host inventory"
   borders={true}
+  canCollapseAll={false}
   canSelectAll={true}
   canSortFavorites={true}
   cells={
@@ -889,6 +934,7 @@ exports[`EntityTable DOM sort by should render correctly 1`] = `
         "cellFormatters": Array [],
         "key": "one",
         "renderFunc": [Function],
+        "sortKey": "one",
         "title": "One",
         "transforms": Array [
           [Function],
@@ -897,6 +943,7 @@ exports[`EntityTable DOM sort by should render correctly 1`] = `
     ]
   }
   className="ins-c-entity-table"
+  collapseAllAriaLabel=""
   contentId="expanded-content"
   dropdownDirection="down"
   dropdownPosition="right"
@@ -904,7 +951,7 @@ exports[`EntityTable DOM sort by should render correctly 1`] = `
   gridBreakPoint="grid-md"
   isHeaderSelectDisabled={false}
   isNested={false}
-  isStickyHeader={false}
+  isStickyHeader={true}
   isTreeTable={false}
   onSelect={[Function]}
   onSort={[Function]}
@@ -920,7 +967,7 @@ exports[`EntityTable DOM sort by should render correctly 1`] = `
         "cells": Array [
           <React.Fragment>
             <div
-              className="ins-composed-col"
+              className="ins-composed-col sentry-mask data-hj-suppress"
             >
               <div />
               <div
@@ -950,6 +997,6 @@ exports[`EntityTable DOM sort by should render correctly 1`] = `
       "index": 1,
     }
   }
-  variant={null}
+  variant="compact"
 />
 `;

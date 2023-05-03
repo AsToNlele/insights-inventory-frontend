@@ -33,7 +33,10 @@ export const asyncInventory = [
     'SET_DISPLAY_NAME',
     'SET_ANSIBLE_HOST',
     'LOAD_TAGS',
-    'ALL_TAGS'
+    'ALL_TAGS',
+    'OPERATING_SYSTEMS',
+    'GROUPS',
+    'GROUP_DETAIL'
 ];
 
 export const systemIssues = [
@@ -57,7 +60,6 @@ export const SET_ANSIBLE_HOST = 'SET_ANSIBLE_HOST';
 export const UPDATE_ENTITIES = 'UPDATE_ENTITIES';
 export const CHANGE_SORT = 'CHANGE_SORT';
 export const FILTER_ENTITIES = 'FILTER_ENTITIES';
-export const APPLICATION_SELECTED = 'APPLICATION_SELECTED';
 export const SHOW_ENTITIES = 'SHOW_ENTITIES';
 export const FILTER_SELECT = 'FILTER_SELECT';
 export const ENTITIES_LOADING = 'ENTITIES_LOADING';
@@ -65,3 +67,4 @@ export const CLEAR_FILTERS = 'CLEAR_FILTERS';
 export const TOGGLE_TAG_MODAL = 'TOGGLE_TAG_MODAL';
 export const CONFIG_CHANGED = 'CONFIG_CHANGED';
 export const TOGGLE_DRAWER = 'TOGGLE_INVENTORY_DRAWER';
+export const CLEAR_ENTITIES = 'CLEAR_ENTITIES';

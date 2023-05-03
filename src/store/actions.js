@@ -1,4 +1,5 @@
-import { ACTION_TYPES, CLEAR_NOTIFICATIONS, SET_INVENTORY_FILTER, SET_PAGINATION } from './action-types';
+import { ACTION_TYPES, CLEAR_NOTIFICATIONS, SET_INVENTORY_FILTER, SET_PAGINATION,
+    CLEAR_ENTITIES } from './action-types';
 import { hosts, getEntitySystemProfile } from '../api';
 export * from './system-issues-actions';
 export * from './inventory-actions';
@@ -32,12 +33,13 @@ export const clearNotifications = () => {
     });
 };
 
-export const editDisplayName = (id, value) => ({
+export const editDisplayName = (id, value, origValue) => ({
     type: ACTION_TYPES.UPDATE_DISPLAY_NAME,
     payload: hosts.apiHostPatchById([id], { display_name: value }), // eslint-disable-line camelcase
     meta: {
         id,
         value,
+        origValue,
         notifications: {
             fulfilled: {
                 variant: 'success',
@@ -60,10 +62,13 @@ export const systemProfile = (itemId) => ({
     payload: getEntitySystemProfile(itemId, {})
 });
 
-export const editAnsibleHost = (id, value) => ({
+export const editAnsibleHost = (id, value, origValue) => ({
     type: ACTION_TYPES.SET_ANSIBLE_HOST,
     payload: hosts.apiHostPatchById([id], { ansible_host: value }), // eslint-disable-line camelcase
     meta: {
+        id,
+        value,
+        origValue,
         notifications: {
             fulfilled: {
                 variant: 'success',
@@ -72,4 +77,9 @@ export const editAnsibleHost = (id, value) => ({
             }
         }
     }
+});
+
+export const clearEntitiesAction = () => ({
+    type: CLEAR_ENTITIES,
+    payload: []
 });

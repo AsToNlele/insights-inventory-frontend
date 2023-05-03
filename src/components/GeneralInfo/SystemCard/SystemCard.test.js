@@ -6,12 +6,26 @@ import SystemCard from './SystemCard';
 import configureStore from 'redux-mock-store';
 import { testProperties, rhsmFacts } from '../../../__mocks__/selectors';
 import promiseMiddleware from 'redux-promise-middleware';
-import { mock } from '../../../__mocks__/hostApi';
+
+import { hosts } from '../../../api/api';
+import MockAdapter from 'axios-mock-adapter';
 import mockedData from '../../../__mocks__/mockedData.json';
+
+const mock = new MockAdapter(hosts.axios, { onNoMatch: 'throwException' });
+
+const location = {};
+
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useLocation: () => location,
+    useHistory: () => ({
+        push: () => undefined
+    })
+}));
 
 jest.mock('@redhat-cloud-services/frontend-components-utilities/RBACHook', () => ({
     esModule: true,
-    usePermissions: () => ({ hasAccess: true })
+    usePermissionsWithContext: () => ({ hasAccess: true })
 }));
 
 describe('SystemCard', () => {
@@ -20,6 +34,12 @@ describe('SystemCard', () => {
 
     beforeEach(() => {
         mockStore = configureStore([promiseMiddleware]);
+        mock.onGet('/api/inventory/v1/hosts/test-id/system_profile').reply(200, mockedData);
+        mock.onGet('/api/inventory/v1/hosts/test-id').reply(200, mockedData);
+        mock.onGet('/api/inventory/v1/hosts/test-id/system_profile?fields%5Bsystem_profile%5D%5B%5D=operating_system').reply(200, mockedData); // eslint-disable-line
+
+        location.pathname = 'localhost:3000/example/path';
+
         initialState = {
             entityDetails: {
                 entity: {
@@ -84,7 +104,7 @@ describe('SystemCard', () => {
         it('should calculate correct ansible host - direct ansible host', () => {
             const store = mockStore(initialState);
             const wrapper = mount(<SystemCard store={ store } />);
-            expect(wrapper.find('SystemCard').first().instance().getAnsibleHost()).toBe('test-ansible-host');
+            expect(wrapper.find('SystemCardCore').first().instance().getAnsibleHost()).toBe('test-ansible-host');
         });
 
         it('should calculate correct ansible host - fqdn', () => {
@@ -99,7 +119,7 @@ describe('SystemCard', () => {
                 }
             });
             const wrapper = mount(<SystemCard store={ store } />);
-            expect(wrapper.find('SystemCard').first().instance().getAnsibleHost()).toBe('test-fqdn');
+            expect(wrapper.find('SystemCardCore').first().instance().getAnsibleHost()).toBe('test-fqdn');
         });
 
         it('should calculate correct ansible host - fqdn', () => {
@@ -114,7 +134,7 @@ describe('SystemCard', () => {
                 }
             });
             const wrapper = mount(<SystemCard store={ store } />);
-            expect(wrapper.find('SystemCard').first().instance().getAnsibleHost()).toBe('test-id');
+            expect(wrapper.find('SystemCardCore').first().instance().getAnsibleHost()).toBe('test-id');
         });
 
         it('should show edit display name', () => {
@@ -173,6 +193,7 @@ describe('SystemCard', () => {
                 }
             });
             const handleClick = jest.fn();
+            location.pathname = 'localhost:3000/example/sap_sids';
 
             const wrapper = mount(<SystemCard store={ store } handleClick={handleClick}/>);
             wrapper.find('dd a').last().simulate('click');
@@ -201,6 +222,7 @@ describe('SystemCard', () => {
                 }
             });
             const handleClick = jest.fn();
+            location.pathname = 'localhost:3000/example/flag';
 
             const wrapper = mount(<SystemCard store={ store } handleClick={handleClick}/>);
             wrapper.find('dd a').last().simulate('click');
@@ -223,6 +245,7 @@ describe('SystemCard', () => {
         'hasDisplayName',
         'hasAnsibleHostname',
         'hasSAP',
+        'hasSystemPurpose',
         'hasCPUs',
         'hasSockets',
         'hasCores',

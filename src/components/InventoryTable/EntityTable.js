@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { selectEntity, setSort } from '../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,13 +7,13 @@ import {
     Table as PfTable,
     TableBody,
     TableHeader,
-    TableGridBreakpoint
+    TableGridBreakpoint,
+    TableVariant
 } from '@patternfly/react-table';
-import { mergeArraysByKey } from '@redhat-cloud-services/frontend-components-utilities/helpers/helpers';
 import { SkeletonTable } from '@redhat-cloud-services/frontend-components/SkeletonTable';
-import NoSystemsTable from './NoSystemsTable';
+import NoEntitiesFound from './NoEntitiesFound';
 import { createRows, createColumns } from './helpers';
-import { defaultColumns } from '../../store/entities';
+import useColumns from './hooks/useColumns';
 
 /**
  * The actual (PF)table component. It calculates each cell and every table property.
@@ -34,7 +34,7 @@ const EntityTable = ({
     expandable: isExpandable,
     onRowClick,
     noDetail,
-    noSystemsTable = <NoSystemsTable />,
+    noSystemsTable = <NoEntitiesFound />,
     showTags,
     columns: columnsProp,
     disableDefaultColumns,
@@ -44,13 +44,8 @@ const EntityTable = ({
     const dispatch = useDispatch();
     const history = useHistory();
     const location = useLocation();
+    const columns = useColumns(columnsProp, disableDefaultColumns, showTags, columnsCounter);
     const rows = useSelector(({ entities: { rows } }) => rows);
-    const columnsRedux = useSelector(
-        ({ entities: { columns } }) => columns,
-        (next, prev) => next.every(
-            ({ key }, index) => prev.findIndex(({ key: prevKey }) => prevKey === key) === index
-        )
-    );
 
     const onItemSelect = (_event, checked, rowId) => {
         const row = isExpandable ? rows[rowId / 2] : rows[rowId];
@@ -65,39 +60,19 @@ const EntityTable = ({
         onSort?.({ index, key, direction });
     };
 
-    const columns = useRef([]);
-    useMemo(() => {
-        if (typeof columnsProp === 'function') {
-            columns.current = columnsProp(defaultColumns);
-        } else if (columnsProp) {
-            const disabledColumns = Array.isArray(disableDefaultColumns) ? disableDefaultColumns : [];
-            const defaultColumnsFiltered = defaultColumns.filter(({ key }) =>
-                (key === 'tags' && showTags) || (key !== 'tags' && !disabledColumns.includes(key))
-            );
-            columns.current = mergeArraysByKey([
-                typeof disableDefaultColumns === 'boolean' && disableDefaultColumns ? [] : defaultColumnsFiltered,
-                columnsProp
-            ], 'key');
-        } else {
-            columns.current = columnsRedux;
-        }
-    }, [
-        showTags,
-        Array.isArray(disableDefaultColumns) ? disableDefaultColumns.join() : disableDefaultColumns,
-        Array.isArray(columnsProp) ?
-            columnsProp.map(({ key }) => key).join() :
-            typeof columnsProp === 'function' ? 'function' : columnsProp,
-        Array.isArray(columnsRedux) ? columnsRedux.map(({ key }) => key).join() : columnsRedux,
-        columnsCounter
-    ]);
-
-    const cells = loaded && createColumns(columns.current, hasItems, rows, isExpandable);
+    const cells = useMemo(() =>
+        loaded && createColumns(columns, hasItems, rows, isExpandable)
+    , [loaded, columns, hasItems, rows, isExpandable]);
 
     const defaultRowClick = (_event, key) => {
         history.push(`${location.pathname}${location.pathname.slice(-1) === '/' ? '' : '/'}${key}`);
     };
 
     delete tableProps.RowWrapper;
+    if (rows?.length === 0) {
+        delete tableProps.actionResolver;
+    }
+
     return (
         <React.Fragment>
             { loaded && cells ?
@@ -107,7 +82,7 @@ const EntityTable = ({
                     cells={ cells }
                     rows={ createRows(
                         rows,
-                        columns.current,
+                        columns,
                         {
                             actions,
                             expandable,
@@ -119,7 +94,7 @@ const EntityTable = ({
                         })
                     }
                     gridBreakPoint={
-                        columns.current?.length > 5 ?
+                        columns?.length > 5 ?
                             TableGridBreakpoint.gridLg :
                             TableGridBreakpoint.gridMd
                     }
@@ -127,13 +102,19 @@ const EntityTable = ({
                     onSort={ (event, index, direction) => {
                         onSortChange(
                             event,
+                            cells?.[index - Boolean(hasCheckbox) - Boolean(expandable)]?.sortKey ||
                             cells?.[index - Boolean(hasCheckbox) - Boolean(expandable)]?.key,
                             direction,
                             index
                         );
                     } }
                     sortBy={ {
-                        index: cells?.findIndex(item => sortBy?.key === item.key) + Boolean(hasCheckbox) + Boolean(expandable),
+                        //Inventory API has different sortBy key than system_profile
+                        index:
+                            cells?.findIndex(
+                                item => (sortBy?.key === item.key)
+                                || (sortBy?.key === 'operating_system' && item.key === 'system_profile')
+                            ) + Boolean(hasCheckbox) + Boolean(expandable),
                         direction: sortBy?.direction
                     } }
                     { ...{
@@ -141,12 +122,17 @@ const EntityTable = ({
                         ...expandable ? { onCollapse: onExpandClick } : {},
                         ...actions && rows?.length > 0 && { actions }
                     } }
+                    isStickyHeader
                     { ...tableProps }
                 >
                     <TableHeader />
                     <TableBody />
                 </PfTable> :
-                <SkeletonTable colSize={ columns.current?.length || 3 } rowSize={ 15 } />
+                <SkeletonTable
+                    colSize={ columns?.length || 3 }
+                    rowSize={ 15 }
+                    variant={variant ?? tableProps.variant}
+                />
             }
         </React.Fragment>
     );
@@ -167,7 +153,9 @@ EntityTable.propTypes = {
     }),
     tableProps: PropTypes.shape({
         [PropTypes.string]: PropTypes.any,
-        RowWrapper: PropTypes.elementType
+        RowWrapper: PropTypes.elementType,
+        variant: PropTypes.string,
+        actionResolver: PropTypes.func
     }),
     onRowClick: PropTypes.func,
     showTags: PropTypes.bool,
@@ -188,6 +176,7 @@ EntityTable.defaultProps = {
     hasCheckbox: true,
     showActions: false,
     rows: [],
+    variant: TableVariant.compact,
     onExpandClick: () => undefined,
     tableProps: {}
 };

@@ -10,13 +10,16 @@ import { SortByDirection } from '@patternfly/react-table';
 
 import { systemProfile } from '../../../store/actions';
 import InfoTable from '../InfoTable';
-import OperatingSystemCard from '../OperatingSystemCard';
-import SystemCard from '../SystemCard';
-import BiosCard from '../BiosCard';
-import InfrastructureCard from '../InfrastructureCard';
-import ConfigurationCard from '../ConfigurationCard';
-import CollectionCard from '../CollectionCard';
+// Since there's a problem with cards loading asynchronously we have to import the cards here as named
+import { OperatingSystemCard } from '../OperatingSystemCard';
+import { SystemCard } from '../SystemCard';
+import { BiosCard } from '../BiosCard';
+import { InfrastructureCard } from '../InfrastructureCard';
+import { ConfigurationCard } from '../ConfigurationCard';
+import { SystemStatusCard } from '../SystemStatusCard';
+import { DataCollectorsCard } from '../DataCollectorsCard/DataCollectorsCard';
 import { Provider } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import './general-information.scss';
 
 class GeneralInformation extends Component {
@@ -42,6 +45,10 @@ class GeneralInformation extends Component {
 
     handleModalToggle = (modalTitle = '', { cells, rows, expandable, filters } = {}, modalVariant = 'small') => {
         rows && this.onSort(undefined, expandable ? 1 : 0, SortByDirection.asc, rows);
+        if (this.state.isModalOpen) {
+            this.props.history.push(this.props.location.pathname.split('/').slice(0, -1).join('/'));
+        }
+
         this.setState(({ isModalOpen }) => ({
             isModalOpen: !isModalOpen,
             modalTitle,
@@ -53,7 +60,7 @@ class GeneralInformation extends Component {
     };
 
     componentDidMount() {
-        this.props.loadSystemDetail && this.props.loadSystemDetail(this.props.entity.id);
+        this.props.loadSystemDetail?.(this.props.inventoryId || this.props.entity.id);
     };
 
     render() {
@@ -66,6 +73,8 @@ class GeneralInformation extends Component {
             BiosCardWrapper,
             InfrastructureCardWrapper,
             ConfigurationCardWrapper,
+            SystemStatusCardWrapper,
+            DataCollectorsCardWrapper,
             CollectionCardWrapper,
             children
         } = this.props;
@@ -73,25 +82,42 @@ class GeneralInformation extends Component {
         return (
             <Wrapper {...(store && { store })}>
                 <div className="ins-c-general-information">
-                    <Grid sm={ 12 } md={ 6 } hasGutter>
-                        {SystemCardWrapper && <GridItem>
-                            <SystemCardWrapper handleClick={ this.handleModalToggle } writePermissions={writePermissions} />
-                        </GridItem>}
-                        {OperatingSystemCardWrapper && <GridItem>
-                            <OperatingSystemCardWrapper handleClick={ this.handleModalToggle } />
-                        </GridItem>}
-                        {BiosCardWrapper && <GridItem>
-                            <BiosCardWrapper handleClick={ this.handleModalToggle } />
-                        </GridItem>}
-                        {InfrastructureCardWrapper && <GridItem>
-                            <InfrastructureCardWrapper handleClick={ this.handleModalToggle } />
-                        </GridItem>}
-                        {ConfigurationCardWrapper && <GridItem>
-                            <ConfigurationCardWrapper handleClick={ this.handleModalToggle } />
-                        </GridItem>}
-                        {CollectionCardWrapper && <GridItem>
-                            <CollectionCardWrapper handleClick={ this.handleModalToggle } />
-                        </GridItem>}
+                    <Grid hasGutter>
+                        <GridItem md={6} sm={12}>
+                            <Grid hasGutter>
+                                {SystemCardWrapper && <GridItem>
+                                    <SystemCardWrapper handleClick={this.handleModalToggle} writePermissions={writePermissions} />
+                                </GridItem>}
+                                {InfrastructureCardWrapper && <GridItem>
+                                    <InfrastructureCardWrapper handleClick={this.handleModalToggle} />
+                                </GridItem>}
+                                {SystemStatusCardWrapper && <GridItem>
+                                    <SystemStatusCardWrapper handleClick={this.handleModalToggle} />
+                                </GridItem>}
+                                {DataCollectorsCardWrapper && <GridItem>
+                                    <DataCollectorsCardWrapper handleClick={this.handleModalToggle} />
+                                </GridItem>}
+                            </Grid>
+                        </GridItem>
+                        <GridItem md={6} sm={12} >
+                            <Grid hasGutter>
+                                {OperatingSystemCardWrapper && <GridItem>
+                                    <OperatingSystemCardWrapper handleClick={this.handleModalToggle} />
+                                </GridItem>}
+
+                                {BiosCardWrapper && <GridItem>
+                                    <BiosCardWrapper handleClick={this.handleModalToggle} />
+                                </GridItem>}
+
+                                {ConfigurationCardWrapper && <GridItem>
+                                    <ConfigurationCardWrapper handleClick={this.handleModalToggle} />
+                                </GridItem>}
+
+                                {CollectionCardWrapper && <GridItem>
+                                    <CollectionCardWrapper handleClick={this.handleModalToggle} />
+                                </GridItem>}
+                            </Grid>
+                        </GridItem>
                         {children}
                         <Modal
                             title={ modalTitle || '' }
@@ -120,16 +146,22 @@ GeneralInformation.propTypes = {
     entity: PropTypes.shape({
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     }),
+    openedModal: PropTypes.string,
     loadSystemDetail: PropTypes.func,
     store: PropTypes.any,
     writePermissions: PropTypes.bool,
-    SystemCardWrapper: PropTypes.oneOfType([PropTypes.node, PropTypes.bool]),
-    OperatingSystemCardWrapper: PropTypes.oneOfType([PropTypes.node, PropTypes.bool]),
-    BiosCardWrapper: PropTypes.oneOfType([PropTypes.node, PropTypes.bool]),
-    InfrastructureCardWrapper: PropTypes.oneOfType([PropTypes.node, PropTypes.bool]),
-    ConfigurationCardWrapper: PropTypes.oneOfType([PropTypes.node, PropTypes.bool]),
-    CollectionCardWrapper: PropTypes.oneOfType([PropTypes.node, PropTypes.bool]),
-    children: PropTypes.node
+    SystemCardWrapper: PropTypes.oneOfType([PropTypes.elementType, PropTypes.bool]),
+    OperatingSystemCardWrapper: PropTypes.oneOfType([PropTypes.elementType, PropTypes.bool]),
+    BiosCardWrapper: PropTypes.oneOfType([PropTypes.elementType, PropTypes.bool]),
+    InfrastructureCardWrapper: PropTypes.oneOfType([PropTypes.elementType, PropTypes.bool]),
+    ConfigurationCardWrapper: PropTypes.oneOfType([PropTypes.elementType, PropTypes.bool]),
+    SystemStatusCardWrapper: PropTypes.oneOfType([PropTypes.elementType, PropTypes.bool]),
+    DataCollectorsCardWrapper: PropTypes.oneOfType([PropTypes.elementType, PropTypes.bool]),
+    CollectionCardWrapper: PropTypes.oneOfType([PropTypes.elementType, PropTypes.bool]),
+    children: PropTypes.node,
+    history: PropTypes.any,
+    location: PropTypes.any,
+    inventoryId: PropTypes.string.isRequired
 };
 GeneralInformation.defaultProps = {
     entity: {},
@@ -138,7 +170,9 @@ GeneralInformation.defaultProps = {
     BiosCardWrapper: BiosCard,
     InfrastructureCardWrapper: InfrastructureCard,
     ConfigurationCardWrapper: ConfigurationCard,
-    CollectionCardWrapper: CollectionCard
+    SystemStatusCardWrapper: SystemStatusCard,
+    DataCollectorsCardWrapper: DataCollectorsCard,
+    CollectionCardWrapper: false
 };
 
 const mapStateToProps = ({
@@ -152,4 +186,4 @@ const mapDispatchToProps = (dispatch) => ({
     loadSystemDetail: (itemId) => dispatch(systemProfile(itemId))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(GeneralInformation);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GeneralInformation));

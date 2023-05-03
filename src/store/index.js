@@ -1,31 +1,40 @@
 
-import { createContext } from 'react';
 import MiddlewareListener from '@redhat-cloud-services/frontend-components-utilities/MiddlewareListener';
-import { ReducerRegistry } from '@redhat-cloud-services/frontend-components-utilities/ReducerRegistry';
 import notificationsMiddleware from '@redhat-cloud-services/frontend-components-notifications/notificationsMiddleware';
 import promise  from 'redux-promise-middleware';
+import reducers, { entitesDetailReducer, mergeWithDetail, mergeWithEntities, tableReducer } from './reducers';
 export { default as reducers, tableReducer, entitesDetailReducer } from './reducers';
-
-export const RegistryContext = createContext({
-    getRegistry: () => {}
-});
+import { applyMiddleware, combineReducers, compose, legacy_createStore as createStore } from 'redux';
+import { INVENTORY_ACTION_TYPES } from './action-types';
 
 let middlewareListener;
 
-export function init (...middleware) {
+const appReducers = {
+    ...reducers,
+    ...mergeWithEntities(tableReducer),
+    ...mergeWithDetail(entitesDetailReducer(INVENTORY_ACTION_TYPES))
+};
+
+const composeEnhancers = IS_DEV ? (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose) : compose;
+
+export const getStore = (...middleware) => {
     middlewareListener = new MiddlewareListener();
-    return new ReducerRegistry(
-        {},
-        [
-            middlewareListener.getMiddleware(),
-            promise,
-            notificationsMiddleware({
-                errorDescriptionKey: ['detail', 'stack']
-            }),
-            ...middleware
-        ]
-    );
-}
+    return createStore(combineReducers(appReducers), {}, composeEnhancers(applyMiddleware(...[
+        middlewareListener.getMiddleware(),
+        promise,
+        notificationsMiddleware({
+            errorTitleKey: ['message'],
+            errorDescriptionKey: ['response.data.detail']
+        }),
+        ...middleware
+    ])));
+};
+
+export const updateReducers = (newReducers = {}) =>
+    combineReducers({
+        ...appReducers,
+        ...newReducers
+    });
 
 export function addNewListener ({ actionType, callback }) {
     return middlewareListener.addNew({

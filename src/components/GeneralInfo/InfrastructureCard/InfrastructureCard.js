@@ -6,7 +6,7 @@ import { generalMapper, interfaceMapper } from '../dataMapper';
 import { infrastructureSelector } from '../selectors';
 import { extraShape } from '../../../constants';
 
-const InfrastructureCard = ({
+const InfrastructureCardCore = ({
     infrastructure,
     handleClick,
     detailLoaded,
@@ -40,6 +40,7 @@ const InfrastructureCard = ({
             value: infrastructure.ipv6?.length,
             plural: 'addresses',
             singular: 'address',
+            target: 'ipv6',
             onClick: () => {
                 handleClick(
                     'IPv6',
@@ -67,7 +68,7 @@ const InfrastructureCard = ({
     ] }
 />);
 
-InfrastructureCard.propTypes = {
+InfrastructureCardCore.propTypes = {
     detailLoaded: PropTypes.bool,
     handleClick: PropTypes.func,
     infrastructure: PropTypes.shape({
@@ -84,7 +85,7 @@ InfrastructureCard.propTypes = {
     hasInterfaces: PropTypes.bool,
     extra: PropTypes.arrayOf(extraShape)
 };
-InfrastructureCard.defaultProps = {
+InfrastructureCardCore.defaultProps = {
     detailLoaded: false,
     handleClick: () => undefined,
     hasType: true,
@@ -95,7 +96,7 @@ InfrastructureCard.defaultProps = {
     extra: []
 };
 
-export default connect(({
+export const InfrastructureCard = connect(({
     entityDetails: {
         entity
     },
@@ -105,4 +106,9 @@ export default connect(({
 }) => ({
     detailLoaded: systemProfile && systemProfile.loaded,
     infrastructure: infrastructureSelector(systemProfile, entity)
-}))(InfrastructureCard);
+}))(InfrastructureCardCore);
+
+InfrastructureCard.propTypes = InfrastructureCardCore.propTypes;
+InfrastructureCard.defaultProps = InfrastructureCardCore.defaultProps;
+
+export default InfrastructureCard;

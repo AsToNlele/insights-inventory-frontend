@@ -10,10 +10,10 @@ const { config: webpackConfig, plugins } = config({
         https: true,
         useProxy: true,
         proxyVerbose: true,
-        env: `${process.env.ENVIRONMENT || 'ci'}-${
+        env: `${process.env.ENVIRONMENT || 'stage'}-${
           process.env.BETA ? 'beta' : 'stable'
         }`, // for accessing prod-beta start your app with ENVIRONMENT=prod and BETA=true
-        appUrl: process.env.BETA ? '/beta/insights/inventory' : '/insights/inventory',
+        appUrl: process.env.BETA ? ['/beta/insights/inventory', '/preview/insights/inventory'] : '/insights/inventory',
         routes: {
             ...(process.env.CONFIG_PORT && {
                 [`${process.env.BETA ? '/beta' : ''}/config`]: {
@@ -27,13 +27,27 @@ const { config: webpackConfig, plugins } = config({
                     return {
                         ...acc,
                         [`/apps/${appName}`]: { host: `${protocol}://localhost:${appPort}` },
-                        [`/insights/${appName}`]: { host: `${protocol}://localhost:${appPort}` },
-                        [`/beta/insights/${appName}`]: { host: `${protocol}://localhost:${appPort}` },
+                        // [`/insights/${appName}`]: { host: `${protocol}://localhost:${appPort}` },
+                        // [`/beta/insights/${appName}`]: { host: `${protocol}://localhost:${appPort}` },
                         [`/beta/apps/${appName}`]: { host: `${protocol}://localhost:${appPort}` }
                     };
                 }, {})
             }
         }
+    },
+    ...process.env.MOCK && {
+        customProxy: [
+            {
+                context: ['/api/inventory/v1/groups'], // you can adjust the `context` value to redirect only specific endpoints
+                target: 'http://localhost:4010', // default prism port
+                secure: false,
+                changeOrigin: true,
+                pathRewrite: { '^/api/inventory/v1': '' },
+                onProxyReq: (proxyReq) => {
+                    proxyReq.setHeader('x-rh-identity', 'foobar'); // avoid 401 errors by providing neccessary security header
+                }
+            }
+        ]
     }
 });
 
@@ -47,6 +61,7 @@ plugins.push(
             // System detail
             './SystemDetail': resolve(__dirname, '../src/components/SystemDetails/GeneralInfo.js'),
             // System detail cards
+            './GeneralInformation': resolve(__dirname, '../src/components/GeneralInfo/GeneralInformation/GeneralInformation.js'),
             './SystemCard': resolve(__dirname, '../src/components/GeneralInfo/SystemCard/SystemCard.js'),
             './OperatingSystemCard':
               resolve(__dirname, '../src/components/GeneralInfo/OperatingSystemCard/OperatingSystemCard.js'),
@@ -54,6 +69,8 @@ plugins.push(
             './ConfigurationCard': resolve(__dirname, '../src/components/GeneralInfo/ConfigurationCard/ConfigurationCard.js'),
             './CollectionCard': resolve(__dirname, '../src/components/GeneralInfo/CollectionCard/CollectionCard.js'),
             './BiosCard': resolve(__dirname, '../src/components/GeneralInfo/BiosCard/BiosCard.js'),
+            './DataCollectorsCard': resolve(__dirname, '../src/components/GeneralInfo/DataCollectorsCard/DataCollectorsCard.js'),
+            './LoadingCard': resolve(__dirname, '../src/components/GeneralInfo/LoadingCard/LoadingCard.js'),
             // System detail data providers
             './selectors': resolve(__dirname, '../src/components/GeneralInfo/selectors/index.js'),
             './dataMapper': resolve(__dirname, '../src/components/GeneralInfo/dataMapper/index.js'),
@@ -61,9 +78,12 @@ plugins.push(
             './InventoryTable': resolve(__dirname, '../src/modules/InventoryTable.js'),
             './AppInfo': resolve(__dirname, '../src/modules/AppInfo.js'),
             './InventoryDetailHead': resolve(__dirname, '../src/modules/InventoryDetailHead.js'),
+            './DetailHeader': resolve(__dirname, '../src/modules/DetailHeader.js'),
             './InventoryDetail': resolve(__dirname, '../src/modules/InventoryDetail.js'),
             './TagWithDialog': resolve(__dirname, '../src/modules/TagWithDialog.js'),
-            './DetailWrapper': resolve(__dirname, '../src/modules/DetailWrapper.js')
+            './DetailWrapper': resolve(__dirname, '../src/modules/DetailWrapper.js'),
+            './OsFilterHelpers': resolve(__dirname, '../src/modules/OsFilterHelpers.js'),
+            './systemProfileStore': resolve(__dirname, '../src/store/systemProfileStore.js')
         }
     })
 );

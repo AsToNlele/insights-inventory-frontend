@@ -5,32 +5,7 @@ exports[`EntityTableToolbar DOM should render correctly - no data 1`] = `
   actionsConfig={null}
   activeFiltersConfig={
     Object {
-      "filters": Array [
-        Object {
-          "category": "Status",
-          "chips": Array [
-            Object {
-              "name": "Fresh",
-              "value": "fresh",
-            },
-            Object {
-              "name": "Stale",
-              "value": "stale",
-            },
-          ],
-          "type": "staleness",
-        },
-        Object {
-          "category": "Source",
-          "chips": Array [
-            Object {
-              "name": "Insights",
-              "value": "insights",
-            },
-          ],
-          "type": "registered_with",
-        },
-      ],
+      "filters": Array [],
       "onDelete": [Function],
     }
   }
@@ -65,13 +40,14 @@ exports[`EntityTableToolbar DOM should render correctly - no data 1`] = `
                 "label": "Stale warning",
                 "value": "stale_warning",
               },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
             ],
             "onChange": [Function],
             "placeholder": "Filter by status",
-            "value": Array [
-              "fresh",
-              "stale",
-            ],
+            "value": undefined,
           },
           "label": "Status",
           "type": "checkbox",
@@ -79,159 +55,95 @@ exports[`EntityTableToolbar DOM should render correctly - no data 1`] = `
         },
         Object {
           "filterValues": Object {
-            "isDisabled": false,
-            "items": Array [
+            "groups": Array [
               Object {
-                "label": "RHEL 9.0",
-                "value": "9.0",
-              },
-              Object {
-                "label": "RHEL 8.6",
-                "value": "8.6",
-              },
-              Object {
-                "label": "RHEL 8.5",
-                "value": "8.5",
-              },
-              Object {
-                "label": "RHEL 8.4",
-                "value": "8.4",
-              },
-              Object {
-                "label": "RHEL 8.3",
-                "value": "8.3",
-              },
-              Object {
-                "label": "RHEL 8.2",
-                "value": "8.2",
-              },
-              Object {
-                "label": "RHEL 8.1",
-                "value": "8.1",
-              },
-              Object {
-                "label": "RHEL 8.0",
-                "value": "8.0",
-              },
-              Object {
-                "label": "RHEL 7.9",
-                "value": "7.9",
-              },
-              Object {
-                "label": "RHEL 7.8",
-                "value": "7.8",
-              },
-              Object {
-                "label": "RHEL 7.7",
-                "value": "7.7",
-              },
-              Object {
-                "label": "RHEL 7.6",
-                "value": "7.6",
-              },
-              Object {
-                "label": "RHEL 7.5",
-                "value": "7.5",
-              },
-              Object {
-                "label": "RHEL 7.4",
-                "value": "7.4",
-              },
-              Object {
-                "label": "RHEL 7.3",
-                "value": "7.3",
-              },
-              Object {
-                "label": "RHEL 7.2",
-                "value": "7.2",
-              },
-              Object {
-                "label": "RHEL 7.1",
-                "value": "7.1",
-              },
-              Object {
-                "label": "RHEL 7.0",
-                "value": "7.0",
-              },
-              Object {
-                "label": "RHEL 6.10",
-                "value": "6.10",
-              },
-              Object {
-                "label": "RHEL 6.9",
-                "value": "6.9",
-              },
-              Object {
-                "label": "RHEL 6.8",
-                "value": "6.8",
-              },
-              Object {
-                "label": "RHEL 6.7",
-                "value": "6.7",
-              },
-              Object {
-                "label": "RHEL 6.6",
-                "value": "6.6",
-              },
-              Object {
-                "label": "RHEL 6.5",
-                "value": "6.5",
-              },
-              Object {
-                "label": "RHEL 6.4",
-                "value": "6.4",
-              },
-              Object {
-                "label": "RHEL 6.3",
-                "value": "6.3",
-              },
-              Object {
-                "label": "RHEL 6.2",
-                "value": "6.2",
-              },
-              Object {
-                "label": "RHEL 6.1",
-                "value": "6.1",
-              },
-              Object {
-                "label": "RHEL 6.0",
-                "value": "6.0",
+                "items": Array [
+                  Object {
+                    "label": "No versions available",
+                  },
+                ],
               },
             ],
+            "isDisabled": false,
             "onChange": [Function],
             "placeholder": "Filter by operating system",
-            "value": undefined,
+            "selected": Object {},
           },
           "label": "Operating System",
-          "type": "checkbox",
-          "value": "operating-system",
+          "type": "group",
+          "value": "operating-system-filter",
         },
         Object {
           "filterValues": Object {
             "isDisabled": false,
             "items": Array [
               Object {
-                "label": "Insights",
-                "value": "insights",
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
               },
             ],
             "onChange": [Function],
-            "placeholder": "Filter by source",
-            "value": Array [
-              "insights",
-            ],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
           },
-          "label": "Source",
+          "label": "Data Collector",
           "type": "checkbox",
-          "value": "source-registered-with",
+          "value": "data-collector-registered-with",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": undefined,
+          },
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
         },
       ],
     }
   }
-  filters={Array []}
   pagination={
     <Skeleton
-      isDark={false}
       size="lg"
     />
   }
@@ -242,32 +154,7 @@ exports[`EntityTableToolbar DOM should render correctly - with children 1`] = `
 <PrimaryToolbar
   activeFiltersConfig={
     Object {
-      "filters": Array [
-        Object {
-          "category": "Status",
-          "chips": Array [
-            Object {
-              "name": "Fresh",
-              "value": "fresh",
-            },
-            Object {
-              "name": "Stale",
-              "value": "stale",
-            },
-          ],
-          "type": "staleness",
-        },
-        Object {
-          "category": "Source",
-          "chips": Array [
-            Object {
-              "name": "Insights",
-              "value": "insights",
-            },
-          ],
-          "type": "registered_with",
-        },
-      ],
+      "filters": Array [],
       "onDelete": [Function],
     }
   }
@@ -302,13 +189,14 @@ exports[`EntityTableToolbar DOM should render correctly - with children 1`] = `
                 "label": "Stale warning",
                 "value": "stale_warning",
               },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
             ],
             "onChange": [Function],
             "placeholder": "Filter by status",
-            "value": Array [
-              "fresh",
-              "stale",
-            ],
+            "value": undefined,
           },
           "label": "Status",
           "type": "checkbox",
@@ -316,156 +204,133 @@ exports[`EntityTableToolbar DOM should render correctly - with children 1`] = `
         },
         Object {
           "filterValues": Object {
-            "isDisabled": false,
-            "items": Array [
+            "groups": Array [
               Object {
-                "label": "RHEL 9.0",
-                "value": "9.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 9.0",
+                    "type": "checkbox",
+                    "value": "9.0",
+                  },
+                ],
+                "label": "RHEL 9",
+                "type": "checkbox",
+                "value": "9",
               },
               Object {
-                "label": "RHEL 8.6",
-                "value": "8.6",
-              },
-              Object {
-                "label": "RHEL 8.5",
-                "value": "8.5",
-              },
-              Object {
-                "label": "RHEL 8.4",
-                "value": "8.4",
-              },
-              Object {
-                "label": "RHEL 8.3",
-                "value": "8.3",
-              },
-              Object {
-                "label": "RHEL 8.2",
-                "value": "8.2",
-              },
-              Object {
-                "label": "RHEL 8.1",
-                "value": "8.1",
-              },
-              Object {
-                "label": "RHEL 8.0",
-                "value": "8.0",
-              },
-              Object {
-                "label": "RHEL 7.9",
-                "value": "7.9",
-              },
-              Object {
-                "label": "RHEL 7.8",
-                "value": "7.8",
-              },
-              Object {
-                "label": "RHEL 7.7",
-                "value": "7.7",
-              },
-              Object {
-                "label": "RHEL 7.6",
-                "value": "7.6",
-              },
-              Object {
-                "label": "RHEL 7.5",
-                "value": "7.5",
-              },
-              Object {
-                "label": "RHEL 7.4",
-                "value": "7.4",
-              },
-              Object {
-                "label": "RHEL 7.3",
-                "value": "7.3",
-              },
-              Object {
-                "label": "RHEL 7.2",
-                "value": "7.2",
-              },
-              Object {
-                "label": "RHEL 7.1",
-                "value": "7.1",
-              },
-              Object {
-                "label": "RHEL 7.0",
-                "value": "7.0",
-              },
-              Object {
-                "label": "RHEL 6.10",
-                "value": "6.10",
-              },
-              Object {
-                "label": "RHEL 6.9",
-                "value": "6.9",
-              },
-              Object {
-                "label": "RHEL 6.8",
-                "value": "6.8",
-              },
-              Object {
-                "label": "RHEL 6.7",
-                "value": "6.7",
-              },
-              Object {
-                "label": "RHEL 6.6",
-                "value": "6.6",
-              },
-              Object {
-                "label": "RHEL 6.5",
-                "value": "6.5",
-              },
-              Object {
-                "label": "RHEL 6.4",
-                "value": "6.4",
-              },
-              Object {
-                "label": "RHEL 6.3",
-                "value": "6.3",
-              },
-              Object {
-                "label": "RHEL 6.2",
-                "value": "6.2",
-              },
-              Object {
-                "label": "RHEL 6.1",
-                "value": "6.1",
-              },
-              Object {
-                "label": "RHEL 6.0",
-                "value": "6.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 8.4",
+                    "type": "checkbox",
+                    "value": "8.4",
+                  },
+                  Object {
+                    "label": "RHEL 8.3",
+                    "type": "checkbox",
+                    "value": "8.3",
+                  },
+                  Object {
+                    "label": "RHEL 8.0",
+                    "type": "checkbox",
+                    "value": "8.0",
+                  },
+                ],
+                "label": "RHEL 8",
+                "type": "checkbox",
+                "value": "8",
               },
             ],
+            "isDisabled": false,
             "onChange": [Function],
             "placeholder": "Filter by operating system",
-            "value": undefined,
+            "selected": Object {
+              "8": Object {
+                "8": false,
+                "8.0": false,
+                "8.3": false,
+                "8.4": false,
+              },
+              "9": Object {
+                "9": false,
+                "9.0": false,
+              },
+            },
           },
           "label": "Operating System",
-          "type": "checkbox",
-          "value": "operating-system",
+          "type": "group",
+          "value": "operating-system-filter",
         },
         Object {
           "filterValues": Object {
             "isDisabled": false,
             "items": Array [
               Object {
-                "label": "Insights",
-                "value": "insights",
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
               },
             ],
             "onChange": [Function],
-            "placeholder": "Filter by source",
-            "value": Array [
-              "insights",
-            ],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
           },
-          "label": "Source",
+          "label": "Data Collector",
           "type": "checkbox",
-          "value": "source-registered-with",
+          "value": "data-collector-registered-with",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": undefined,
+          },
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
         },
       ],
     }
   }
-  filters={Array []}
   pagination={
     Object {
       "isDisabled": false,
@@ -484,30 +349,6 @@ exports[`EntityTableToolbar DOM should render correctly - with custom activeFilt
   activeFiltersConfig={
     Object {
       "filters": Array [
-        Object {
-          "category": "Status",
-          "chips": Array [
-            Object {
-              "name": "Fresh",
-              "value": "fresh",
-            },
-            Object {
-              "name": "Stale",
-              "value": "stale",
-            },
-          ],
-          "type": "staleness",
-        },
-        Object {
-          "category": "Source",
-          "chips": Array [
-            Object {
-              "name": "Insights",
-              "value": "insights",
-            },
-          ],
-          "type": "registered_with",
-        },
         Object {
           "category": "Some",
           "chips": Array [
@@ -554,13 +395,14 @@ exports[`EntityTableToolbar DOM should render correctly - with custom activeFilt
                 "label": "Stale warning",
                 "value": "stale_warning",
               },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
             ],
             "onChange": [Function],
             "placeholder": "Filter by status",
-            "value": Array [
-              "fresh",
-              "stale",
-            ],
+            "value": undefined,
           },
           "label": "Status",
           "type": "checkbox",
@@ -568,151 +410,129 @@ exports[`EntityTableToolbar DOM should render correctly - with custom activeFilt
         },
         Object {
           "filterValues": Object {
-            "isDisabled": false,
-            "items": Array [
+            "groups": Array [
               Object {
-                "label": "RHEL 9.0",
-                "value": "9.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 9.0",
+                    "type": "checkbox",
+                    "value": "9.0",
+                  },
+                ],
+                "label": "RHEL 9",
+                "type": "checkbox",
+                "value": "9",
               },
               Object {
-                "label": "RHEL 8.6",
-                "value": "8.6",
-              },
-              Object {
-                "label": "RHEL 8.5",
-                "value": "8.5",
-              },
-              Object {
-                "label": "RHEL 8.4",
-                "value": "8.4",
-              },
-              Object {
-                "label": "RHEL 8.3",
-                "value": "8.3",
-              },
-              Object {
-                "label": "RHEL 8.2",
-                "value": "8.2",
-              },
-              Object {
-                "label": "RHEL 8.1",
-                "value": "8.1",
-              },
-              Object {
-                "label": "RHEL 8.0",
-                "value": "8.0",
-              },
-              Object {
-                "label": "RHEL 7.9",
-                "value": "7.9",
-              },
-              Object {
-                "label": "RHEL 7.8",
-                "value": "7.8",
-              },
-              Object {
-                "label": "RHEL 7.7",
-                "value": "7.7",
-              },
-              Object {
-                "label": "RHEL 7.6",
-                "value": "7.6",
-              },
-              Object {
-                "label": "RHEL 7.5",
-                "value": "7.5",
-              },
-              Object {
-                "label": "RHEL 7.4",
-                "value": "7.4",
-              },
-              Object {
-                "label": "RHEL 7.3",
-                "value": "7.3",
-              },
-              Object {
-                "label": "RHEL 7.2",
-                "value": "7.2",
-              },
-              Object {
-                "label": "RHEL 7.1",
-                "value": "7.1",
-              },
-              Object {
-                "label": "RHEL 7.0",
-                "value": "7.0",
-              },
-              Object {
-                "label": "RHEL 6.10",
-                "value": "6.10",
-              },
-              Object {
-                "label": "RHEL 6.9",
-                "value": "6.9",
-              },
-              Object {
-                "label": "RHEL 6.8",
-                "value": "6.8",
-              },
-              Object {
-                "label": "RHEL 6.7",
-                "value": "6.7",
-              },
-              Object {
-                "label": "RHEL 6.6",
-                "value": "6.6",
-              },
-              Object {
-                "label": "RHEL 6.5",
-                "value": "6.5",
-              },
-              Object {
-                "label": "RHEL 6.4",
-                "value": "6.4",
-              },
-              Object {
-                "label": "RHEL 6.3",
-                "value": "6.3",
-              },
-              Object {
-                "label": "RHEL 6.2",
-                "value": "6.2",
-              },
-              Object {
-                "label": "RHEL 6.1",
-                "value": "6.1",
-              },
-              Object {
-                "label": "RHEL 6.0",
-                "value": "6.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 8.4",
+                    "type": "checkbox",
+                    "value": "8.4",
+                  },
+                  Object {
+                    "label": "RHEL 8.3",
+                    "type": "checkbox",
+                    "value": "8.3",
+                  },
+                  Object {
+                    "label": "RHEL 8.0",
+                    "type": "checkbox",
+                    "value": "8.0",
+                  },
+                ],
+                "label": "RHEL 8",
+                "type": "checkbox",
+                "value": "8",
               },
             ],
+            "isDisabled": false,
             "onChange": [Function],
             "placeholder": "Filter by operating system",
-            "value": undefined,
+            "selected": Object {
+              "8": Object {
+                "8": false,
+                "8.0": false,
+                "8.3": false,
+                "8.4": false,
+              },
+              "9": Object {
+                "9": false,
+                "9.0": false,
+              },
+            },
           },
           "label": "Operating System",
-          "type": "checkbox",
-          "value": "operating-system",
+          "type": "group",
+          "value": "operating-system-filter",
         },
         Object {
           "filterValues": Object {
             "isDisabled": false,
             "items": Array [
               Object {
-                "label": "Insights",
-                "value": "insights",
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
               },
             ],
             "onChange": [Function],
-            "placeholder": "Filter by source",
-            "value": Array [
-              "insights",
-            ],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
           },
-          "label": "Source",
+          "label": "Data Collector",
           "type": "checkbox",
-          "value": "source-registered-with",
+          "value": "data-collector-registered-with",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": undefined,
+          },
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
         },
         Object {
           "filterValues": Object {
@@ -747,7 +567,6 @@ exports[`EntityTableToolbar DOM should render correctly - with custom activeFilt
       ],
     }
   }
-  filters={Array []}
   pagination={
     Object {
       "isDisabled": false,
@@ -765,30 +584,217 @@ exports[`EntityTableToolbar DOM should render correctly - with custom filters 1`
 <PrimaryToolbar
   activeFiltersConfig={
     Object {
-      "filters": Array [
+      "filters": Array [],
+      "onDelete": [Function],
+    }
+  }
+  className="ins-c-inventory__table--toolbar "
+  filterConfig={
+    Object {
+      "isDisabled": false,
+      "items": Array [
         Object {
-          "category": "Status",
-          "chips": Array [
-            Object {
-              "name": "Fresh",
-              "value": "fresh",
-            },
-            Object {
-              "name": "Stale",
-              "value": "stale",
-            },
-          ],
-          "type": "staleness",
+          "filterValues": Object {
+            "isDisabled": false,
+            "onChange": [Function],
+            "placeholder": "Filter by name",
+            "value": "",
+          },
+          "label": "Name",
+          "value": "name-filter",
         },
         Object {
-          "category": "Source",
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "label": "Fresh",
+                "value": "fresh",
+              },
+              Object {
+                "label": "Stale",
+                "value": "stale",
+              },
+              Object {
+                "label": "Stale warning",
+                "value": "stale_warning",
+              },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by status",
+            "value": undefined,
+          },
+          "label": "Status",
+          "type": "checkbox",
+          "value": "stale-status",
+        },
+        Object {
+          "filterValues": Object {
+            "groups": Array [
+              Object {
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 9.0",
+                    "type": "checkbox",
+                    "value": "9.0",
+                  },
+                ],
+                "label": "RHEL 9",
+                "type": "checkbox",
+                "value": "9",
+              },
+              Object {
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 8.4",
+                    "type": "checkbox",
+                    "value": "8.4",
+                  },
+                  Object {
+                    "label": "RHEL 8.3",
+                    "type": "checkbox",
+                    "value": "8.3",
+                  },
+                  Object {
+                    "label": "RHEL 8.0",
+                    "type": "checkbox",
+                    "value": "8.0",
+                  },
+                ],
+                "label": "RHEL 8",
+                "type": "checkbox",
+                "value": "8",
+              },
+            ],
+            "isDisabled": false,
+            "onChange": [Function],
+            "placeholder": "Filter by operating system",
+            "selected": Object {
+              "8": Object {
+                "8": false,
+                "8.0": false,
+                "8.3": false,
+                "8.4": false,
+              },
+              "9": Object {
+                "9": false,
+                "9.0": false,
+              },
+            },
+          },
+          "label": "Operating System",
+          "type": "group",
+          "value": "operating-system-filter",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
+          },
+          "label": "Data Collector",
+          "type": "checkbox",
+          "value": "data-collector-registered-with",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": undefined,
+          },
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "placeholder": "Filter by filter by text",
+          },
+          "label": "Filter by text",
+        },
+      ],
+    }
+  }
+  pagination={
+    Object {
+      "isDisabled": false,
+      "itemCount": undefined,
+      "onPerPageSelect": [Function],
+      "onSetPage": [Function],
+      "page": undefined,
+      "perPage": undefined,
+    }
+  }
+/>
+`;
+
+exports[`EntityTableToolbar DOM should render correctly - with customFilters 1`] = `
+<PrimaryToolbar
+  activeFiltersConfig={
+    Object {
+      "filters": Array [
+        Object {
+          "category": "RHC status",
           "chips": Array [
             Object {
-              "name": "Insights",
-              "value": "insights",
+              "name": "Active",
+              "value": "not_nil",
             },
           ],
-          "type": "registered_with",
+          "type": "rhc_client_id",
         },
       ],
       "onDelete": [Function],
@@ -825,13 +831,14 @@ exports[`EntityTableToolbar DOM should render correctly - with custom filters 1`
                 "label": "Stale warning",
                 "value": "stale_warning",
               },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
             ],
             "onChange": [Function],
             "placeholder": "Filter by status",
-            "value": Array [
-              "fresh",
-              "stale",
-            ],
+            "value": undefined,
           },
           "label": "Status",
           "type": "checkbox",
@@ -839,163 +846,165 @@ exports[`EntityTableToolbar DOM should render correctly - with custom filters 1`
         },
         Object {
           "filterValues": Object {
-            "isDisabled": false,
-            "items": Array [
+            "groups": Array [
               Object {
-                "label": "RHEL 9.0",
-                "value": "9.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 9.0",
+                    "type": "checkbox",
+                    "value": "9.0",
+                  },
+                ],
+                "label": "RHEL 9",
+                "type": "checkbox",
+                "value": "9",
               },
               Object {
-                "label": "RHEL 8.6",
-                "value": "8.6",
-              },
-              Object {
-                "label": "RHEL 8.5",
-                "value": "8.5",
-              },
-              Object {
-                "label": "RHEL 8.4",
-                "value": "8.4",
-              },
-              Object {
-                "label": "RHEL 8.3",
-                "value": "8.3",
-              },
-              Object {
-                "label": "RHEL 8.2",
-                "value": "8.2",
-              },
-              Object {
-                "label": "RHEL 8.1",
-                "value": "8.1",
-              },
-              Object {
-                "label": "RHEL 8.0",
-                "value": "8.0",
-              },
-              Object {
-                "label": "RHEL 7.9",
-                "value": "7.9",
-              },
-              Object {
-                "label": "RHEL 7.8",
-                "value": "7.8",
-              },
-              Object {
-                "label": "RHEL 7.7",
-                "value": "7.7",
-              },
-              Object {
-                "label": "RHEL 7.6",
-                "value": "7.6",
-              },
-              Object {
-                "label": "RHEL 7.5",
-                "value": "7.5",
-              },
-              Object {
-                "label": "RHEL 7.4",
-                "value": "7.4",
-              },
-              Object {
-                "label": "RHEL 7.3",
-                "value": "7.3",
-              },
-              Object {
-                "label": "RHEL 7.2",
-                "value": "7.2",
-              },
-              Object {
-                "label": "RHEL 7.1",
-                "value": "7.1",
-              },
-              Object {
-                "label": "RHEL 7.0",
-                "value": "7.0",
-              },
-              Object {
-                "label": "RHEL 6.10",
-                "value": "6.10",
-              },
-              Object {
-                "label": "RHEL 6.9",
-                "value": "6.9",
-              },
-              Object {
-                "label": "RHEL 6.8",
-                "value": "6.8",
-              },
-              Object {
-                "label": "RHEL 6.7",
-                "value": "6.7",
-              },
-              Object {
-                "label": "RHEL 6.6",
-                "value": "6.6",
-              },
-              Object {
-                "label": "RHEL 6.5",
-                "value": "6.5",
-              },
-              Object {
-                "label": "RHEL 6.4",
-                "value": "6.4",
-              },
-              Object {
-                "label": "RHEL 6.3",
-                "value": "6.3",
-              },
-              Object {
-                "label": "RHEL 6.2",
-                "value": "6.2",
-              },
-              Object {
-                "label": "RHEL 6.1",
-                "value": "6.1",
-              },
-              Object {
-                "label": "RHEL 6.0",
-                "value": "6.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 8.4",
+                    "type": "checkbox",
+                    "value": "8.4",
+                  },
+                  Object {
+                    "label": "RHEL 8.3",
+                    "type": "checkbox",
+                    "value": "8.3",
+                  },
+                  Object {
+                    "label": "RHEL 8.0",
+                    "type": "checkbox",
+                    "value": "8.0",
+                  },
+                ],
+                "label": "RHEL 8",
+                "type": "checkbox",
+                "value": "8",
               },
             ],
+            "isDisabled": false,
             "onChange": [Function],
             "placeholder": "Filter by operating system",
-            "value": undefined,
+            "selected": Object {
+              "8": Object {
+                "8": false,
+                "8.0": false,
+                "8.3": false,
+                "8.4": false,
+              },
+              "9": Object {
+                "9": false,
+                "9.0": false,
+              },
+            },
           },
           "label": "Operating System",
-          "type": "checkbox",
-          "value": "operating-system",
+          "type": "group",
+          "value": "operating-system-filter",
         },
         Object {
           "filterValues": Object {
             "isDisabled": false,
             "items": Array [
               Object {
-                "label": "Insights",
-                "value": "insights",
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
               },
             ],
             "onChange": [Function],
-            "placeholder": "Filter by source",
-            "value": Array [
-              "insights",
-            ],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
           },
-          "label": "Source",
+          "label": "Data Collector",
           "type": "checkbox",
-          "value": "source-registered-with",
+          "value": "data-collector-registered-with",
         },
         Object {
           "filterValues": Object {
             "isDisabled": false,
-            "placeholder": "Filter by filter by text",
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": Array [
+              "not_nil",
+            ],
           },
-          "label": "Filter by text",
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
+        },
+        Object {
+          "filterValues": Object {
+            "className": "ins-c-tagfilter",
+            "filterBy": "",
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "className": "ins-c-tagfilter__tail",
+                "isDisabled": true,
+                "label": <span>
+                   
+                  <Spinner
+                    size="md"
+                  />
+                   
+                </span>,
+                "value": "",
+              },
+            ],
+            "onChange": [Function],
+            "onFilter": [Function],
+            "placeholder": "Filter by tags",
+            "selected": Object {},
+            "value": "",
+          },
+          "label": "Tags",
+          "placeholder": "Filter system by tag",
+          "type": "group",
+          "value": "tags",
         },
       ],
     }
   }
-  filters={Array []}
   pagination={
     Object {
       "isDisabled": false,
@@ -1024,16 +1033,6 @@ exports[`EntityTableToolbar DOM should render correctly - with default filters 1
           ],
           "type": "staleness",
         },
-        Object {
-          "category": "Source",
-          "chips": Array [
-            Object {
-              "name": "Insights",
-              "value": "insights",
-            },
-          ],
-          "type": "registered_with",
-        },
       ],
       "onDelete": [Function],
     }
@@ -1069,6 +1068,10 @@ exports[`EntityTableToolbar DOM should render correctly - with default filters 1
                 "label": "Stale warning",
                 "value": "stale_warning",
               },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
             ],
             "onChange": [Function],
             "placeholder": "Filter by status",
@@ -1082,156 +1085,133 @@ exports[`EntityTableToolbar DOM should render correctly - with default filters 1
         },
         Object {
           "filterValues": Object {
-            "isDisabled": false,
-            "items": Array [
+            "groups": Array [
               Object {
-                "label": "RHEL 9.0",
-                "value": "9.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 9.0",
+                    "type": "checkbox",
+                    "value": "9.0",
+                  },
+                ],
+                "label": "RHEL 9",
+                "type": "checkbox",
+                "value": "9",
               },
               Object {
-                "label": "RHEL 8.6",
-                "value": "8.6",
-              },
-              Object {
-                "label": "RHEL 8.5",
-                "value": "8.5",
-              },
-              Object {
-                "label": "RHEL 8.4",
-                "value": "8.4",
-              },
-              Object {
-                "label": "RHEL 8.3",
-                "value": "8.3",
-              },
-              Object {
-                "label": "RHEL 8.2",
-                "value": "8.2",
-              },
-              Object {
-                "label": "RHEL 8.1",
-                "value": "8.1",
-              },
-              Object {
-                "label": "RHEL 8.0",
-                "value": "8.0",
-              },
-              Object {
-                "label": "RHEL 7.9",
-                "value": "7.9",
-              },
-              Object {
-                "label": "RHEL 7.8",
-                "value": "7.8",
-              },
-              Object {
-                "label": "RHEL 7.7",
-                "value": "7.7",
-              },
-              Object {
-                "label": "RHEL 7.6",
-                "value": "7.6",
-              },
-              Object {
-                "label": "RHEL 7.5",
-                "value": "7.5",
-              },
-              Object {
-                "label": "RHEL 7.4",
-                "value": "7.4",
-              },
-              Object {
-                "label": "RHEL 7.3",
-                "value": "7.3",
-              },
-              Object {
-                "label": "RHEL 7.2",
-                "value": "7.2",
-              },
-              Object {
-                "label": "RHEL 7.1",
-                "value": "7.1",
-              },
-              Object {
-                "label": "RHEL 7.0",
-                "value": "7.0",
-              },
-              Object {
-                "label": "RHEL 6.10",
-                "value": "6.10",
-              },
-              Object {
-                "label": "RHEL 6.9",
-                "value": "6.9",
-              },
-              Object {
-                "label": "RHEL 6.8",
-                "value": "6.8",
-              },
-              Object {
-                "label": "RHEL 6.7",
-                "value": "6.7",
-              },
-              Object {
-                "label": "RHEL 6.6",
-                "value": "6.6",
-              },
-              Object {
-                "label": "RHEL 6.5",
-                "value": "6.5",
-              },
-              Object {
-                "label": "RHEL 6.4",
-                "value": "6.4",
-              },
-              Object {
-                "label": "RHEL 6.3",
-                "value": "6.3",
-              },
-              Object {
-                "label": "RHEL 6.2",
-                "value": "6.2",
-              },
-              Object {
-                "label": "RHEL 6.1",
-                "value": "6.1",
-              },
-              Object {
-                "label": "RHEL 6.0",
-                "value": "6.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 8.4",
+                    "type": "checkbox",
+                    "value": "8.4",
+                  },
+                  Object {
+                    "label": "RHEL 8.3",
+                    "type": "checkbox",
+                    "value": "8.3",
+                  },
+                  Object {
+                    "label": "RHEL 8.0",
+                    "type": "checkbox",
+                    "value": "8.0",
+                  },
+                ],
+                "label": "RHEL 8",
+                "type": "checkbox",
+                "value": "8",
               },
             ],
+            "isDisabled": false,
             "onChange": [Function],
             "placeholder": "Filter by operating system",
-            "value": undefined,
+            "selected": Object {
+              "8": Object {
+                "8": false,
+                "8.0": false,
+                "8.3": false,
+                "8.4": false,
+              },
+              "9": Object {
+                "9": false,
+                "9.0": false,
+              },
+            },
           },
           "label": "Operating System",
-          "type": "checkbox",
-          "value": "operating-system",
+          "type": "group",
+          "value": "operating-system-filter",
         },
         Object {
           "filterValues": Object {
             "isDisabled": false,
             "items": Array [
               Object {
-                "label": "Insights",
-                "value": "insights",
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
               },
             ],
             "onChange": [Function],
-            "placeholder": "Filter by source",
-            "value": Array [
-              "insights",
-            ],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
           },
-          "label": "Source",
+          "label": "Data Collector",
           "type": "checkbox",
-          "value": "source-registered-with",
+          "value": "data-collector-registered-with",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": undefined,
+          },
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
         },
       ],
     }
   }
-  filters={Array []}
   pagination={
     Object {
       "isDisabled": false,
@@ -1249,32 +1229,7 @@ exports[`EntityTableToolbar DOM should render correctly - with default tag filte
 <PrimaryToolbar
   activeFiltersConfig={
     Object {
-      "filters": Array [
-        Object {
-          "category": "Status",
-          "chips": Array [
-            Object {
-              "name": "Fresh",
-              "value": "fresh",
-            },
-            Object {
-              "name": "Stale",
-              "value": "stale",
-            },
-          ],
-          "type": "staleness",
-        },
-        Object {
-          "category": "Source",
-          "chips": Array [
-            Object {
-              "name": "Insights",
-              "value": "insights",
-            },
-          ],
-          "type": "registered_with",
-        },
-      ],
+      "filters": Array [],
       "onDelete": [Function],
     }
   }
@@ -1309,13 +1264,14 @@ exports[`EntityTableToolbar DOM should render correctly - with default tag filte
                 "label": "Stale warning",
                 "value": "stale_warning",
               },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
             ],
             "onChange": [Function],
             "placeholder": "Filter by status",
-            "value": Array [
-              "fresh",
-              "stale",
-            ],
+            "value": undefined,
           },
           "label": "Status",
           "type": "checkbox",
@@ -1323,156 +1279,133 @@ exports[`EntityTableToolbar DOM should render correctly - with default tag filte
         },
         Object {
           "filterValues": Object {
-            "isDisabled": false,
-            "items": Array [
+            "groups": Array [
               Object {
-                "label": "RHEL 9.0",
-                "value": "9.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 9.0",
+                    "type": "checkbox",
+                    "value": "9.0",
+                  },
+                ],
+                "label": "RHEL 9",
+                "type": "checkbox",
+                "value": "9",
               },
               Object {
-                "label": "RHEL 8.6",
-                "value": "8.6",
-              },
-              Object {
-                "label": "RHEL 8.5",
-                "value": "8.5",
-              },
-              Object {
-                "label": "RHEL 8.4",
-                "value": "8.4",
-              },
-              Object {
-                "label": "RHEL 8.3",
-                "value": "8.3",
-              },
-              Object {
-                "label": "RHEL 8.2",
-                "value": "8.2",
-              },
-              Object {
-                "label": "RHEL 8.1",
-                "value": "8.1",
-              },
-              Object {
-                "label": "RHEL 8.0",
-                "value": "8.0",
-              },
-              Object {
-                "label": "RHEL 7.9",
-                "value": "7.9",
-              },
-              Object {
-                "label": "RHEL 7.8",
-                "value": "7.8",
-              },
-              Object {
-                "label": "RHEL 7.7",
-                "value": "7.7",
-              },
-              Object {
-                "label": "RHEL 7.6",
-                "value": "7.6",
-              },
-              Object {
-                "label": "RHEL 7.5",
-                "value": "7.5",
-              },
-              Object {
-                "label": "RHEL 7.4",
-                "value": "7.4",
-              },
-              Object {
-                "label": "RHEL 7.3",
-                "value": "7.3",
-              },
-              Object {
-                "label": "RHEL 7.2",
-                "value": "7.2",
-              },
-              Object {
-                "label": "RHEL 7.1",
-                "value": "7.1",
-              },
-              Object {
-                "label": "RHEL 7.0",
-                "value": "7.0",
-              },
-              Object {
-                "label": "RHEL 6.10",
-                "value": "6.10",
-              },
-              Object {
-                "label": "RHEL 6.9",
-                "value": "6.9",
-              },
-              Object {
-                "label": "RHEL 6.8",
-                "value": "6.8",
-              },
-              Object {
-                "label": "RHEL 6.7",
-                "value": "6.7",
-              },
-              Object {
-                "label": "RHEL 6.6",
-                "value": "6.6",
-              },
-              Object {
-                "label": "RHEL 6.5",
-                "value": "6.5",
-              },
-              Object {
-                "label": "RHEL 6.4",
-                "value": "6.4",
-              },
-              Object {
-                "label": "RHEL 6.3",
-                "value": "6.3",
-              },
-              Object {
-                "label": "RHEL 6.2",
-                "value": "6.2",
-              },
-              Object {
-                "label": "RHEL 6.1",
-                "value": "6.1",
-              },
-              Object {
-                "label": "RHEL 6.0",
-                "value": "6.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 8.4",
+                    "type": "checkbox",
+                    "value": "8.4",
+                  },
+                  Object {
+                    "label": "RHEL 8.3",
+                    "type": "checkbox",
+                    "value": "8.3",
+                  },
+                  Object {
+                    "label": "RHEL 8.0",
+                    "type": "checkbox",
+                    "value": "8.0",
+                  },
+                ],
+                "label": "RHEL 8",
+                "type": "checkbox",
+                "value": "8",
               },
             ],
+            "isDisabled": false,
             "onChange": [Function],
             "placeholder": "Filter by operating system",
-            "value": undefined,
+            "selected": Object {
+              "8": Object {
+                "8": false,
+                "8.0": false,
+                "8.3": false,
+                "8.4": false,
+              },
+              "9": Object {
+                "9": false,
+                "9.0": false,
+              },
+            },
           },
           "label": "Operating System",
-          "type": "checkbox",
-          "value": "operating-system",
+          "type": "group",
+          "value": "operating-system-filter",
         },
         Object {
           "filterValues": Object {
             "isDisabled": false,
             "items": Array [
               Object {
-                "label": "Insights",
-                "value": "insights",
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
               },
             ],
             "onChange": [Function],
-            "placeholder": "Filter by source",
-            "value": Array [
-              "insights",
-            ],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
           },
-          "label": "Source",
+          "label": "Data Collector",
           "type": "checkbox",
-          "value": "source-registered-with",
+          "value": "data-collector-registered-with",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": undefined,
+          },
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
         },
       ],
     }
   }
-  filters={Array []}
   pagination={
     Object {
       "isDisabled": false,
@@ -1495,7 +1428,6 @@ exports[`EntityTableToolbar DOM should render correctly - with items 1`] = `
     }
   }
   className="ins-c-inventory__table--toolbar ins-c-inventory__table--toolbar-has-items"
-  filters={Array []}
   pagination={
     Object {
       "isDisabled": false,
@@ -1542,13 +1474,14 @@ exports[`EntityTableToolbar DOM should render correctly - with no access 1`] = `
                 "label": "Stale warning",
                 "value": "stale_warning",
               },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
             ],
             "onChange": [Function],
             "placeholder": "Filter by status",
-            "value": Array [
-              "fresh",
-              "stale",
-            ],
+            "value": undefined,
           },
           "label": "Status",
           "type": "checkbox",
@@ -1556,156 +1489,133 @@ exports[`EntityTableToolbar DOM should render correctly - with no access 1`] = `
         },
         Object {
           "filterValues": Object {
-            "isDisabled": true,
-            "items": Array [
+            "groups": Array [
               Object {
-                "label": "RHEL 9.0",
-                "value": "9.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 9.0",
+                    "type": "checkbox",
+                    "value": "9.0",
+                  },
+                ],
+                "label": "RHEL 9",
+                "type": "checkbox",
+                "value": "9",
               },
               Object {
-                "label": "RHEL 8.6",
-                "value": "8.6",
-              },
-              Object {
-                "label": "RHEL 8.5",
-                "value": "8.5",
-              },
-              Object {
-                "label": "RHEL 8.4",
-                "value": "8.4",
-              },
-              Object {
-                "label": "RHEL 8.3",
-                "value": "8.3",
-              },
-              Object {
-                "label": "RHEL 8.2",
-                "value": "8.2",
-              },
-              Object {
-                "label": "RHEL 8.1",
-                "value": "8.1",
-              },
-              Object {
-                "label": "RHEL 8.0",
-                "value": "8.0",
-              },
-              Object {
-                "label": "RHEL 7.9",
-                "value": "7.9",
-              },
-              Object {
-                "label": "RHEL 7.8",
-                "value": "7.8",
-              },
-              Object {
-                "label": "RHEL 7.7",
-                "value": "7.7",
-              },
-              Object {
-                "label": "RHEL 7.6",
-                "value": "7.6",
-              },
-              Object {
-                "label": "RHEL 7.5",
-                "value": "7.5",
-              },
-              Object {
-                "label": "RHEL 7.4",
-                "value": "7.4",
-              },
-              Object {
-                "label": "RHEL 7.3",
-                "value": "7.3",
-              },
-              Object {
-                "label": "RHEL 7.2",
-                "value": "7.2",
-              },
-              Object {
-                "label": "RHEL 7.1",
-                "value": "7.1",
-              },
-              Object {
-                "label": "RHEL 7.0",
-                "value": "7.0",
-              },
-              Object {
-                "label": "RHEL 6.10",
-                "value": "6.10",
-              },
-              Object {
-                "label": "RHEL 6.9",
-                "value": "6.9",
-              },
-              Object {
-                "label": "RHEL 6.8",
-                "value": "6.8",
-              },
-              Object {
-                "label": "RHEL 6.7",
-                "value": "6.7",
-              },
-              Object {
-                "label": "RHEL 6.6",
-                "value": "6.6",
-              },
-              Object {
-                "label": "RHEL 6.5",
-                "value": "6.5",
-              },
-              Object {
-                "label": "RHEL 6.4",
-                "value": "6.4",
-              },
-              Object {
-                "label": "RHEL 6.3",
-                "value": "6.3",
-              },
-              Object {
-                "label": "RHEL 6.2",
-                "value": "6.2",
-              },
-              Object {
-                "label": "RHEL 6.1",
-                "value": "6.1",
-              },
-              Object {
-                "label": "RHEL 6.0",
-                "value": "6.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 8.4",
+                    "type": "checkbox",
+                    "value": "8.4",
+                  },
+                  Object {
+                    "label": "RHEL 8.3",
+                    "type": "checkbox",
+                    "value": "8.3",
+                  },
+                  Object {
+                    "label": "RHEL 8.0",
+                    "type": "checkbox",
+                    "value": "8.0",
+                  },
+                ],
+                "label": "RHEL 8",
+                "type": "checkbox",
+                "value": "8",
               },
             ],
+            "isDisabled": true,
             "onChange": [Function],
             "placeholder": "Filter by operating system",
-            "value": undefined,
+            "selected": Object {
+              "8": Object {
+                "8": false,
+                "8.0": false,
+                "8.3": false,
+                "8.4": false,
+              },
+              "9": Object {
+                "9": false,
+                "9.0": false,
+              },
+            },
           },
           "label": "Operating System",
-          "type": "checkbox",
-          "value": "operating-system",
+          "type": "group",
+          "value": "operating-system-filter",
         },
         Object {
           "filterValues": Object {
             "isDisabled": true,
             "items": Array [
               Object {
-                "label": "Insights",
-                "value": "insights",
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
               },
             ],
             "onChange": [Function],
-            "placeholder": "Filter by source",
-            "value": Array [
-              "insights",
-            ],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
           },
-          "label": "Source",
+          "label": "Data Collector",
           "type": "checkbox",
-          "value": "source-registered-with",
+          "value": "data-collector-registered-with",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": true,
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": undefined,
+          },
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": true,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
         },
       ],
     }
   }
-  filters={Array []}
   pagination={
     Object {
       "isDisabled": true,
@@ -1731,32 +1641,7 @@ exports[`EntityTableToolbar DOM should render correctly - with tags 1`] = `
 <PrimaryToolbar
   activeFiltersConfig={
     Object {
-      "filters": Array [
-        Object {
-          "category": "Status",
-          "chips": Array [
-            Object {
-              "name": "Fresh",
-              "value": "fresh",
-            },
-            Object {
-              "name": "Stale",
-              "value": "stale",
-            },
-          ],
-          "type": "staleness",
-        },
-        Object {
-          "category": "Source",
-          "chips": Array [
-            Object {
-              "name": "Insights",
-              "value": "insights",
-            },
-          ],
-          "type": "registered_with",
-        },
-      ],
+      "filters": Array [],
       "onDelete": [Function],
     }
   }
@@ -1791,13 +1676,14 @@ exports[`EntityTableToolbar DOM should render correctly - with tags 1`] = `
                 "label": "Stale warning",
                 "value": "stale_warning",
               },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
             ],
             "onChange": [Function],
             "placeholder": "Filter by status",
-            "value": Array [
-              "fresh",
-              "stale",
-            ],
+            "value": undefined,
           },
           "label": "Status",
           "type": "checkbox",
@@ -1805,151 +1691,129 @@ exports[`EntityTableToolbar DOM should render correctly - with tags 1`] = `
         },
         Object {
           "filterValues": Object {
-            "isDisabled": false,
-            "items": Array [
+            "groups": Array [
               Object {
-                "label": "RHEL 9.0",
-                "value": "9.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 9.0",
+                    "type": "checkbox",
+                    "value": "9.0",
+                  },
+                ],
+                "label": "RHEL 9",
+                "type": "checkbox",
+                "value": "9",
               },
               Object {
-                "label": "RHEL 8.6",
-                "value": "8.6",
-              },
-              Object {
-                "label": "RHEL 8.5",
-                "value": "8.5",
-              },
-              Object {
-                "label": "RHEL 8.4",
-                "value": "8.4",
-              },
-              Object {
-                "label": "RHEL 8.3",
-                "value": "8.3",
-              },
-              Object {
-                "label": "RHEL 8.2",
-                "value": "8.2",
-              },
-              Object {
-                "label": "RHEL 8.1",
-                "value": "8.1",
-              },
-              Object {
-                "label": "RHEL 8.0",
-                "value": "8.0",
-              },
-              Object {
-                "label": "RHEL 7.9",
-                "value": "7.9",
-              },
-              Object {
-                "label": "RHEL 7.8",
-                "value": "7.8",
-              },
-              Object {
-                "label": "RHEL 7.7",
-                "value": "7.7",
-              },
-              Object {
-                "label": "RHEL 7.6",
-                "value": "7.6",
-              },
-              Object {
-                "label": "RHEL 7.5",
-                "value": "7.5",
-              },
-              Object {
-                "label": "RHEL 7.4",
-                "value": "7.4",
-              },
-              Object {
-                "label": "RHEL 7.3",
-                "value": "7.3",
-              },
-              Object {
-                "label": "RHEL 7.2",
-                "value": "7.2",
-              },
-              Object {
-                "label": "RHEL 7.1",
-                "value": "7.1",
-              },
-              Object {
-                "label": "RHEL 7.0",
-                "value": "7.0",
-              },
-              Object {
-                "label": "RHEL 6.10",
-                "value": "6.10",
-              },
-              Object {
-                "label": "RHEL 6.9",
-                "value": "6.9",
-              },
-              Object {
-                "label": "RHEL 6.8",
-                "value": "6.8",
-              },
-              Object {
-                "label": "RHEL 6.7",
-                "value": "6.7",
-              },
-              Object {
-                "label": "RHEL 6.6",
-                "value": "6.6",
-              },
-              Object {
-                "label": "RHEL 6.5",
-                "value": "6.5",
-              },
-              Object {
-                "label": "RHEL 6.4",
-                "value": "6.4",
-              },
-              Object {
-                "label": "RHEL 6.3",
-                "value": "6.3",
-              },
-              Object {
-                "label": "RHEL 6.2",
-                "value": "6.2",
-              },
-              Object {
-                "label": "RHEL 6.1",
-                "value": "6.1",
-              },
-              Object {
-                "label": "RHEL 6.0",
-                "value": "6.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 8.4",
+                    "type": "checkbox",
+                    "value": "8.4",
+                  },
+                  Object {
+                    "label": "RHEL 8.3",
+                    "type": "checkbox",
+                    "value": "8.3",
+                  },
+                  Object {
+                    "label": "RHEL 8.0",
+                    "type": "checkbox",
+                    "value": "8.0",
+                  },
+                ],
+                "label": "RHEL 8",
+                "type": "checkbox",
+                "value": "8",
               },
             ],
+            "isDisabled": false,
             "onChange": [Function],
             "placeholder": "Filter by operating system",
-            "value": undefined,
+            "selected": Object {
+              "8": Object {
+                "8": false,
+                "8.0": false,
+                "8.3": false,
+                "8.4": false,
+              },
+              "9": Object {
+                "9": false,
+                "9.0": false,
+              },
+            },
           },
           "label": "Operating System",
-          "type": "checkbox",
-          "value": "operating-system",
+          "type": "group",
+          "value": "operating-system-filter",
         },
         Object {
           "filterValues": Object {
             "isDisabled": false,
             "items": Array [
               Object {
-                "label": "Insights",
-                "value": "insights",
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
               },
             ],
             "onChange": [Function],
-            "placeholder": "Filter by source",
-            "value": Array [
-              "insights",
-            ],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
           },
-          "label": "Source",
+          "label": "Data Collector",
           "type": "checkbox",
-          "value": "source-registered-with",
+          "value": "data-collector-registered-with",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": undefined,
+          },
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
         },
         Object {
           "filterValues": Object {
@@ -1984,7 +1848,6 @@ exports[`EntityTableToolbar DOM should render correctly - with tags 1`] = `
       ],
     }
   }
-  filters={Array []}
   pagination={
     Object {
       "isDisabled": false,
@@ -2010,32 +1873,7 @@ exports[`EntityTableToolbar DOM should render correctly 1`] = `
 <PrimaryToolbar
   activeFiltersConfig={
     Object {
-      "filters": Array [
-        Object {
-          "category": "Status",
-          "chips": Array [
-            Object {
-              "name": "Fresh",
-              "value": "fresh",
-            },
-            Object {
-              "name": "Stale",
-              "value": "stale",
-            },
-          ],
-          "type": "staleness",
-        },
-        Object {
-          "category": "Source",
-          "chips": Array [
-            Object {
-              "name": "Insights",
-              "value": "insights",
-            },
-          ],
-          "type": "registered_with",
-        },
-      ],
+      "filters": Array [],
       "onDelete": [Function],
     }
   }
@@ -2070,13 +1908,14 @@ exports[`EntityTableToolbar DOM should render correctly 1`] = `
                 "label": "Stale warning",
                 "value": "stale_warning",
               },
+              Object {
+                "label": "Unknown",
+                "value": "unknown",
+              },
             ],
             "onChange": [Function],
             "placeholder": "Filter by status",
-            "value": Array [
-              "fresh",
-              "stale",
-            ],
+            "value": undefined,
           },
           "label": "Status",
           "type": "checkbox",
@@ -2084,156 +1923,133 @@ exports[`EntityTableToolbar DOM should render correctly 1`] = `
         },
         Object {
           "filterValues": Object {
-            "isDisabled": false,
-            "items": Array [
+            "groups": Array [
               Object {
-                "label": "RHEL 9.0",
-                "value": "9.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 9.0",
+                    "type": "checkbox",
+                    "value": "9.0",
+                  },
+                ],
+                "label": "RHEL 9",
+                "type": "checkbox",
+                "value": "9",
               },
               Object {
-                "label": "RHEL 8.6",
-                "value": "8.6",
-              },
-              Object {
-                "label": "RHEL 8.5",
-                "value": "8.5",
-              },
-              Object {
-                "label": "RHEL 8.4",
-                "value": "8.4",
-              },
-              Object {
-                "label": "RHEL 8.3",
-                "value": "8.3",
-              },
-              Object {
-                "label": "RHEL 8.2",
-                "value": "8.2",
-              },
-              Object {
-                "label": "RHEL 8.1",
-                "value": "8.1",
-              },
-              Object {
-                "label": "RHEL 8.0",
-                "value": "8.0",
-              },
-              Object {
-                "label": "RHEL 7.9",
-                "value": "7.9",
-              },
-              Object {
-                "label": "RHEL 7.8",
-                "value": "7.8",
-              },
-              Object {
-                "label": "RHEL 7.7",
-                "value": "7.7",
-              },
-              Object {
-                "label": "RHEL 7.6",
-                "value": "7.6",
-              },
-              Object {
-                "label": "RHEL 7.5",
-                "value": "7.5",
-              },
-              Object {
-                "label": "RHEL 7.4",
-                "value": "7.4",
-              },
-              Object {
-                "label": "RHEL 7.3",
-                "value": "7.3",
-              },
-              Object {
-                "label": "RHEL 7.2",
-                "value": "7.2",
-              },
-              Object {
-                "label": "RHEL 7.1",
-                "value": "7.1",
-              },
-              Object {
-                "label": "RHEL 7.0",
-                "value": "7.0",
-              },
-              Object {
-                "label": "RHEL 6.10",
-                "value": "6.10",
-              },
-              Object {
-                "label": "RHEL 6.9",
-                "value": "6.9",
-              },
-              Object {
-                "label": "RHEL 6.8",
-                "value": "6.8",
-              },
-              Object {
-                "label": "RHEL 6.7",
-                "value": "6.7",
-              },
-              Object {
-                "label": "RHEL 6.6",
-                "value": "6.6",
-              },
-              Object {
-                "label": "RHEL 6.5",
-                "value": "6.5",
-              },
-              Object {
-                "label": "RHEL 6.4",
-                "value": "6.4",
-              },
-              Object {
-                "label": "RHEL 6.3",
-                "value": "6.3",
-              },
-              Object {
-                "label": "RHEL 6.2",
-                "value": "6.2",
-              },
-              Object {
-                "label": "RHEL 6.1",
-                "value": "6.1",
-              },
-              Object {
-                "label": "RHEL 6.0",
-                "value": "6.0",
+                "groupSelectable": true,
+                "items": Array [
+                  Object {
+                    "label": "RHEL 8.4",
+                    "type": "checkbox",
+                    "value": "8.4",
+                  },
+                  Object {
+                    "label": "RHEL 8.3",
+                    "type": "checkbox",
+                    "value": "8.3",
+                  },
+                  Object {
+                    "label": "RHEL 8.0",
+                    "type": "checkbox",
+                    "value": "8.0",
+                  },
+                ],
+                "label": "RHEL 8",
+                "type": "checkbox",
+                "value": "8",
               },
             ],
+            "isDisabled": false,
             "onChange": [Function],
             "placeholder": "Filter by operating system",
-            "value": undefined,
+            "selected": Object {
+              "8": Object {
+                "8": false,
+                "8.0": false,
+                "8.3": false,
+                "8.4": false,
+              },
+              "9": Object {
+                "9": false,
+                "9.0": false,
+              },
+            },
           },
           "label": "Operating System",
-          "type": "checkbox",
-          "value": "operating-system",
+          "type": "group",
+          "value": "operating-system-filter",
         },
         Object {
           "filterValues": Object {
             "isDisabled": false,
             "items": Array [
               Object {
-                "label": "Insights",
-                "value": "insights",
+                "idName": "Insights id",
+                "idValue": "insights_id",
+                "label": "insights-client",
+                "value": "puptoo",
+              },
+              Object {
+                "idName": "Subscription manager id",
+                "idValue": "subscription_manager_id",
+                "label": "subscription-manager",
+                "value": "rhsm-conduit",
+              },
+              Object {
+                "label": "Satellite/Discovery",
+                "value": "yupana",
+              },
+              Object {
+                "label": "insights-client not connected",
+                "value": "!puptoo",
               },
             ],
             "onChange": [Function],
-            "placeholder": "Filter by source",
-            "value": Array [
-              "insights",
-            ],
+            "placeholder": "Filter by data collector",
+            "value": undefined,
           },
-          "label": "Source",
+          "label": "Data Collector",
           "type": "checkbox",
-          "value": "source-registered-with",
+          "value": "data-collector-registered-with",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": Array [
+              Object {
+                "label": "Active",
+                "value": "not_nil",
+              },
+              Object {
+                "label": "Inactive",
+                "value": "nil",
+              },
+            ],
+            "onChange": [Function],
+            "placeholder": "Filter by rhc status",
+            "value": undefined,
+          },
+          "label": "RHC status",
+          "type": "checkbox",
+          "value": "rhc-status",
+        },
+        Object {
+          "filterValues": Object {
+            "isDisabled": false,
+            "items": [MockFunction],
+            "onChange": [Function],
+            "placeholder": "Filter by last seen",
+            "value": undefined,
+          },
+          "label": "Last seen",
+          "type": "radio",
+          "value": "last_seen",
         },
       ],
     }
   }
-  filters={Array []}
   pagination={
     Object {
       "isDisabled": false,

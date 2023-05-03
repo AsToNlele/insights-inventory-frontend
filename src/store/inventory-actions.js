@@ -3,7 +3,6 @@ import {
     SELECT_ENTITY,
     CHANGE_SORT,
     FILTER_ENTITIES,
-    APPLICATION_SELECTED,
     FILTER_SELECT,
     UPDATE_ENTITIES,
     ENTITIES_LOADING,
@@ -18,9 +17,10 @@ import {
     hosts,
     getAllTags as defaultGetAllTags,
     getTags,
-    filtersReducer
+    filtersReducer,
+    getOperatingSystems
 } from '../api';
-import { defaultFilters } from '../Utilities/constants';
+import { getGroupDetail, getGroups } from '../components/InventoryGroups/utils/api';
 
 export const loadEntities = (items = [], { filters, ...config }, { showTags } = {}, getEntities = defaultGetEntities) => {
     const itemIds = items.reduce((acc, curr) => (
@@ -34,15 +34,17 @@ export const loadEntities = (items = [], { filters, ...config }, { showTags } = 
     (config.hideFilters?.all && config.hideFilters?.[name] !== false);
 
     const updatedFilters = filters ? filters.reduce(filtersReducer, {
-        ...defaultFilters,
         ...filters.length === 0 && { registeredWithFilter: [] },
         ...(isFilterDisabled('stale') && { staleFilter: undefined }),
         ...(isFilterDisabled('registeredWith') && { registeredWithFilter: undefined }),
-        ...(isFilterDisabled('operating_system') && { osFilter: undefined })
-    }) : { ...defaultFilters,
+        ...(isFilterDisabled('operating_system') && { osFilter: undefined }),
+        ...(isFilterDisabled('host_group')) && { groupHostFilter: undefined }
+    }) : {
         ...(isFilterDisabled('stale') && { staleFilter: undefined }),
+        ...(isFilterDisabled('last_seen') && { lastSeenFilter: undefined }),
         ...(isFilterDisabled('registeredWith') && { registeredWithFilter: undefined }),
-        ...(isFilterDisabled('operating_system') && { osFilter: undefined })
+        ...(isFilterDisabled('operating_system') && { osFilter: undefined }),
+        ...(isFilterDisabled('host_group')) && { groupHostFilter: undefined }
     };
 
     const orderBy = config.orderBy || 'updated';
@@ -112,11 +114,6 @@ export const filterEntities = (key, filterString) => ({
     payload: { key, filterString }
 });
 
-export const detailSelect = (appName) => ({
-    type: APPLICATION_SELECTED,
-    payload: { appName }
-});
-
 export const entitiesLoading = (isLoading = true) => ({
     type: ENTITIES_LOADING,
     payload: { isLoading }
@@ -173,10 +170,25 @@ export const toggleTagModal = (isOpen) => ({
     payload: { isOpen }
 });
 
-export const fetchAllTags = (search, options, getTags = defaultGetAllTags) => ({
+export const fetchAllTags = (search, pagination, getTags = defaultGetAllTags) => ({
     type: ACTION_TYPES.ALL_TAGS,
-    payload: getTags(search, options),
+    payload: getTags(search, pagination),
     meta: { lastDateRequestTags: Date.now() }
+});
+
+export const fetchGroups = (search, pagination) => ({
+    type: ACTION_TYPES.GROUPS,
+    payload: getGroups(search, pagination)
+});
+
+export const fetchGroupDetail = (groupId) => ({
+    type: ACTION_TYPES.GROUP_DETAIL,
+    payload: getGroupDetail(groupId)
+});
+
+export const fetchOperatingSystems = (params = []) => ({
+    type: ACTION_TYPES.OPERATING_SYSTEMS,
+    payload: getOperatingSystems(params)
 });
 
 export const deleteEntity = (systems, displayName) => ({

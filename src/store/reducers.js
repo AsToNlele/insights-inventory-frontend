@@ -6,23 +6,15 @@ import {
     SET_PAGINATION
 } from './action-types';
 import systemProfileStore from './systemProfileStore';
-import {
-    ComplianceTab,
-    VulnerabilityTab,
-    AdvisorTab,
-    GeneralInformationTab,
-    PatchTab,
-    RosTab
-} from '../components/SystemDetails';
 import { applyReducerHash } from '@redhat-cloud-services/frontend-components-utilities/ReducerRegistry';
 import { mergeArraysByKey } from '@redhat-cloud-services/frontend-components-utilities/helpers';
 import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
 import entitiesReducer, { defaultState as entitiesDefault } from './entities';
-import entityDetailsReducer, { entityDefaultState as entityDefault } from './entityDetails';
+import entityDetailsReducer, { entityDefaultState as entityDefault, updateEntity } from './entityDetails';
+import groups from './groups';
+import groupDetail from './groupDetail';
 
 export { entitiesReducer, entityDetailsReducer };
-
-import permissionsReducer from './permissions/reducer';
 
 const defaultState = { loaded: false, selected: new Map() };
 
@@ -34,46 +26,10 @@ function entitiesLoaded(state, { payload }) {
     };
 }
 
-function updateEntity(state, { meta }) {
-    return {
-        ...state,
-        rows: state.rows.map((row) => row.id === meta?.id ? ({
-            ...row,
-            // eslint-disable-next-line camelcase
-            display_name: meta?.value
-        }) : row)
-    };
-}
-
 function entityLoaded(state) {
     return {
         ...state,
-        loaded: true,
-        activeApps: [
-            { title: 'General information', name: 'general_information', component: GeneralInformationTab },
-            { title: 'Advisor', name: 'advisor', component: AdvisorTab },
-            {
-                title: 'Vulnerability',
-                name: 'vulnerabilities',
-                component: VulnerabilityTab
-            },
-            {
-                title: 'Compliance',
-                name: 'compliance',
-                component: ComplianceTab
-            },
-            {
-                title: 'Patch',
-                name: 'patch',
-                component: PatchTab
-            },
-            {
-                title: 'Resource Optimization',
-                name: 'ros',
-                isVisible: false,
-                component: RosTab
-            }
-        ].filter(Boolean)
+        loaded: true
     };
 }
 
@@ -99,17 +55,6 @@ function entitySelected(state, { payload }) {
     return {
         ...state,
         selected: new Map(selected)
-    };
-}
-
-function resourceOptTabVisibility(state, { payload }) {
-    return {
-        ...state,
-        activeApps: state.activeApps?.map((entity) => entity.name === 'ros' ? ({
-            ...entity,
-            isVisible: payload
-        }) : entity
-        )
     };
 }
 
@@ -159,7 +104,8 @@ function onSetPagination(state, { payload }) {
 let reducers = {
     notifications: notificationsReducer,
     systemProfileStore,
-    permissionsReducer
+    groups,
+    groupDetail
 };
 
 export const tableReducer = applyReducerHash(
@@ -178,8 +124,7 @@ export const tableReducer = applyReducerHash(
 
 export const entitesDetailReducer = () => applyReducerHash(
     {
-        [INVENTORY_ACTION_TYPES.LOAD_ENTITY_FULFILLED]: entityLoaded,
-        [INVENTORY_ACTION_TYPES.LOAD_SYSTEM_PROFILE_FULFILLED]: resourceOptTabVisibility
+        [INVENTORY_ACTION_TYPES.LOAD_ENTITY_FULFILLED]: entityLoaded
     },
     defaultState
 );

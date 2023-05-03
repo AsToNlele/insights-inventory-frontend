@@ -635,10 +635,13 @@ exports[`should return DOWN 1`] = `
   onFocus={[Function]}
   onMouseEnter={[Function]}
   onMouseLeave={[Function]}
+  onPopperMouseEnter={[Function]}
+  onPopperMouseLeave={[Function]}
   onTriggerEnter={[Function]}
   placement="top"
   popper={
     <div
+      aria-live="off"
       className="pf-c-tooltip"
       id="pf-tooltip-2"
       role="tooltip"
@@ -662,11 +665,20 @@ exports[`should return DOWN 1`] = `
   positionModifiers={
     Object {
       "bottom": "pf-m-bottom",
+      "bottom-end": "pf-m-bottom-right",
+      "bottom-start": "pf-m-bottom-left",
       "left": "pf-m-left",
+      "left-end": "pf-m-left-bottom",
+      "left-start": "pf-m-left-top",
       "right": "pf-m-right",
+      "right-end": "pf-m-right-bottom",
+      "right-start": "pf-m-right-top",
       "top": "pf-m-top",
+      "top-end": "pf-m-top-right",
+      "top-start": "pf-m-top-left",
     }
   }
+  removeFindDomNode={false}
   trigger={
     <OutlinedArrowAltCircleDownIcon
       className="ins-c-inventory__detail--down"
@@ -702,10 +714,13 @@ exports[`should return UP 1`] = `
   onFocus={[Function]}
   onMouseEnter={[Function]}
   onMouseLeave={[Function]}
+  onPopperMouseEnter={[Function]}
+  onPopperMouseLeave={[Function]}
   onTriggerEnter={[Function]}
   placement="top"
   popper={
     <div
+      aria-live="off"
       className="pf-c-tooltip"
       id="pf-tooltip-1"
       role="tooltip"
@@ -729,11 +744,20 @@ exports[`should return UP 1`] = `
   positionModifiers={
     Object {
       "bottom": "pf-m-bottom",
+      "bottom-end": "pf-m-bottom-right",
+      "bottom-start": "pf-m-bottom-left",
       "left": "pf-m-left",
+      "left-end": "pf-m-left-bottom",
+      "left-start": "pf-m-left-top",
       "right": "pf-m-right",
+      "right-end": "pf-m-right-bottom",
+      "right-start": "pf-m-right-top",
       "top": "pf-m-top",
+      "top-end": "pf-m-top-right",
+      "top-start": "pf-m-top-left",
     }
   }
+  removeFindDomNode={false}
   trigger={
     <OutlinedArrowAltCircleUpIcon
       className="ins-c-inventory__detail--up"
@@ -769,10 +793,13 @@ exports[`should return false 1`] = `
   onFocus={[Function]}
   onMouseEnter={[Function]}
   onMouseLeave={[Function]}
+  onPopperMouseEnter={[Function]}
+  onPopperMouseLeave={[Function]}
   onTriggerEnter={[Function]}
   placement="top"
   popper={
     <div
+      aria-live="off"
       className="pf-c-tooltip"
       id="pf-tooltip-4"
       role="tooltip"
@@ -796,11 +823,20 @@ exports[`should return false 1`] = `
   positionModifiers={
     Object {
       "bottom": "pf-m-bottom",
+      "bottom-end": "pf-m-bottom-right",
+      "bottom-start": "pf-m-bottom-left",
       "left": "pf-m-left",
+      "left-end": "pf-m-left-bottom",
+      "left-start": "pf-m-left-top",
       "right": "pf-m-right",
+      "right-end": "pf-m-right-bottom",
+      "right-start": "pf-m-right-top",
       "top": "pf-m-top",
+      "top-end": "pf-m-top-right",
+      "top-start": "pf-m-top-left",
     }
   }
+  removeFindDomNode={false}
   trigger={
     <TimesIcon
       className="ins-c-inventory__detail--disabled"
@@ -836,10 +872,13 @@ exports[`should return true 1`] = `
   onFocus={[Function]}
   onMouseEnter={[Function]}
   onMouseLeave={[Function]}
+  onPopperMouseEnter={[Function]}
+  onPopperMouseLeave={[Function]}
   onTriggerEnter={[Function]}
   placement="top"
   popper={
     <div
+      aria-live="off"
       className="pf-c-tooltip"
       id="pf-tooltip-3"
       role="tooltip"
@@ -863,11 +902,20 @@ exports[`should return true 1`] = `
   positionModifiers={
     Object {
       "bottom": "pf-m-bottom",
+      "bottom-end": "pf-m-bottom-right",
+      "bottom-start": "pf-m-bottom-left",
       "left": "pf-m-left",
+      "left-end": "pf-m-left-bottom",
+      "left-start": "pf-m-left-top",
       "right": "pf-m-right",
+      "right-end": "pf-m-right-bottom",
+      "right-start": "pf-m-right-top",
       "top": "pf-m-top",
+      "top-end": "pf-m-top-right",
+      "top-start": "pf-m-top-left",
     }
   }
+  removeFindDomNode={false}
   trigger={
     <CheckCircleIcon
       className="ins-c-inventory__detail--enabled"

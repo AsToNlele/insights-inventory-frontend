@@ -9,16 +9,18 @@ import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { createPromise as promiseMiddleware } from 'redux-promise-middleware';
 import toJson from 'enzyme-to-json';
-import routeData from 'react-router';
+import { Router } from 'react-router';
 import { MemoryRouter } from 'react-router-dom';
 import TitleColumn from './TitleColumn';
 import InsightsDisconnected from '../../Utilities/InsightsDisconnected';
 import { defaultColumns } from '../../store/entities';
+import { createMemoryHistory } from 'history';
+
+jest.mock('../../Utilities/useFeatureFlag');
 
 describe('EntityTable', () => {
     let initialState;
     let mockStore;
-    const routerPush = jest.fn();
     beforeEach(() => {
         mockStore = configureStore([promiseMiddleware()]);
         initialState = {
@@ -30,15 +32,12 @@ describe('EntityTable', () => {
                     one: 'data',
                     system_profile: {}
                 }],
-                columns: [{ key: 'one', title: 'One', renderFunc: TitleColumn }],
+                columns: [{ key: 'one', sortKey: 'one', title: 'One', renderFunc: TitleColumn }],
                 page: 1,
                 perPage: 50,
                 total: 500
             }
         };
-        jest.spyOn(routeData, 'useHistory').mockReturnValue({
-            push: routerPush
-        });
     });
 
     describe('DOM', () => {
@@ -92,7 +91,7 @@ describe('EntityTable', () => {
             const store = mockStore({
                 entities: {
                     ...initialState.entities,
-                    columns: [...new Array(6)].map(() => ({ key: 'one', title: 'One' }))
+                    columns: [...new Array(6)].map(() => ({ key: 'one', sortKey: 'one', title: 'One' }))
                 }
             });
             const wrapper = mount(<MemoryRouter>
@@ -140,6 +139,7 @@ describe('EntityTable', () => {
                     <Provider store={ store }>
                         <EntityTable loaded disableDefaultColumns sortBy={{
                             key: 'one',
+                            sortKey: 'one',
                             directions: 'asc'
                         }} />
                     </Provider>
@@ -182,6 +182,44 @@ describe('EntityTable', () => {
                 </MemoryRouter>);
                 expect(toJson(wrapper.find('Table'), { mode: 'shallow' })).toMatchSnapshot();
             });
+
+            it('should mark OS column as sorted in Asc order', () => {
+                const store = mockStore(initialState);
+                const wrapper = mount(<MemoryRouter>
+                    <Provider store={store}>
+                        <EntityTable
+                            loaded
+                            expandable
+                            disableDefaultColumns
+                            sortBy={{
+                                key: 'system_profile',
+                                direction: 'asc'
+                            }}
+                        />
+                    </Provider>
+                </MemoryRouter>);
+
+                expect(wrapper.find('Table').props().sortBy).toEqual({ index: 1, direction: 'asc' });
+            });
+
+            it('should mark OS column as sorted in Desc order', () => {
+                const store = mockStore(initialState);
+                const wrapper = mount(<MemoryRouter>
+                    <Provider store={store}>
+                        <EntityTable
+                            loaded
+                            expandable
+                            disableDefaultColumns
+                            sortBy={{
+                                key: 'system_profile',
+                                direction: 'desc'
+                            }}
+                        />
+                    </Provider>
+                </MemoryRouter>);
+
+                expect(wrapper.find('Table').props().sortBy).toEqual({ index: 1, direction: 'desc' });
+            });
         });
 
         it('should render correctly - compact', () => {
@@ -218,15 +256,18 @@ describe('EntityTable', () => {
             initialState = {
                 entities: {
                     ...initialState.entities,
-                    columns: defaultColumns,
+                    columns: defaultColumns(),
                     rows: [{
                         id: 'testing-id',
-                        insights_id: null,
                         system_profile: {}
                     }, {
                         id: 'testing-id-1',
-                        insights_id: 'some-id-herse',
-                        system_profile: {}
+                        system_profile: {},
+                        per_reporter_staleness: {
+                            puptoo: {
+                                stale_timestamp: '2022-07-07T18:22:04.663407+00:00'
+                            }
+                        }
                     }]
                 }
             };
@@ -336,7 +377,6 @@ describe('EntityTable', () => {
             </MemoryRouter>);
 
             expect(getColumns.mock.calls.length).toEqual(1);
-            expect(getColumns).toHaveBeenCalledWith(defaultColumns);
 
             expect(wrapper.find('table').find('th')).toHaveLength(2);
             expect(wrapper.find('table').find('th').last().text()).toEqual('Secret attribute');
@@ -425,6 +465,7 @@ describe('EntityTable', () => {
         });
 
         it('should disable just one default column', () => {
+            jest.mock('../../Utilities/useFeatureFlag');
             initialState = {
                 entities: {
                     ...initialState.entities,
@@ -492,15 +533,17 @@ describe('EntityTable', () => {
     });
 
     describe('API', () => {
+        jest.mock('../../Utilities/useFeatureFlag');
         it('should call default onRowClick', () => {
+            const history = createMemoryHistory();
             const store = mockStore(initialState);
-            const wrapper = mount(<MemoryRouter>
+            const wrapper = mount(<Router history={history}>
                 <Provider store={ store }>
                     <EntityTable loaded disableDefaultColumns/>
                 </Provider>
-            </MemoryRouter>);
+            </Router>);
             wrapper.find('table tbody tr a[widget="col"]').first().simulate('click');
-            expect(routerPush).toHaveBeenCalled();
+            expect(history.location.pathname).toBe('/testing-id');
         });
 
         it('should call onRowClick', () => {
@@ -639,7 +682,7 @@ describe('EntityTable', () => {
             const store = mockStore({
                 entities: {
                     ...initialState.entities,
-                    columns: [{ key: 'health', title: 'Health' }]
+                    columns: [{ key: 'health', sortKey: 'health', title: 'Health' }]
                 }
             });
             const wrapper = mount(<MemoryRouter>

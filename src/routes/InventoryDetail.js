@@ -1,49 +1,95 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { connect, useSelector, shallowEqual, useStore } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useSelector, useStore, useDispatch } from 'react-redux';
+import { useLocation, useParams, Link, useHistory } from 'react-router-dom';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import './inventory.scss';
-import { Link, useHistory } from 'react-router-dom';
-import { entitesDetailReducer, RegistryContext } from '../store';
 import * as actions from '../store/actions';
-import { Grid, GridItem } from '@patternfly/react-core';
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
-import routerParams from '@redhat-cloud-services/frontend-components-utilities/RouterParams';
-import { Skeleton, SkeletonSize, PageHeader, Main } from '@redhat-cloud-services/frontend-components';
-import classnames from 'classnames';
+import { Skeleton, SkeletonSize } from '@redhat-cloud-services/frontend-components';
 import { routes } from '../Routes';
-import InventoryDetailHead from '../modules/InventoryDetailHead';
-import AppInfo from '../modules/AppInfo';
-import DetailWrapper from '../modules/DetailWrapper';
+import InventoryDetail from '../components/InventoryDetail/InventoryDetail';
+import { useWritePermissions } from '../Utilities/constants';
+import {
+    ComplianceTab,
+    VulnerabilityTab,
+    AdvisorTab,
+    GeneralInformationTab,
+    PatchTab,
+    RosTab
+} from '../components/SystemDetails';
 
-const Inventory = ({ entity, currentApp, clearNotifications }) => {
+const appList = [
+    { title: 'General information', name: 'general_information', component: GeneralInformationTab },
+    { title: 'Advisor', name: 'advisor', component: AdvisorTab },
+    {
+        title: 'Vulnerability',
+        name: 'vulnerabilities',
+        component: VulnerabilityTab
+    },
+    {
+        title: 'Compliance',
+        name: 'compliance',
+        component: ComplianceTab
+    },
+    {
+        title: 'Patch',
+        name: 'patch',
+        component: PatchTab
+    },
+    {
+        title: 'Resource Optimization',
+        name: 'ros',
+        isVisible: false,
+        component: RosTab
+    }
+];
+
+const BreadcrumbWrapper = ({ entity, inventoryId, entityLoaded }) => (
+    <Breadcrumb ouiaId="systems-list">
+        <BreadcrumbItem>
+            <Link to={routes.table}>Inventory</Link>
+        </BreadcrumbItem>
+        <BreadcrumbItem isActive>
+            <div className="ins-c-inventory__detail--breadcrumb-name">
+                {
+                    entity ?
+                        entity.display_name :
+                        entityLoaded !== true ?
+                            <Skeleton size={SkeletonSize.xs} /> : inventoryId
+                }
+            </div>
+        </BreadcrumbItem>
+    </Breadcrumb>
+);
+
+const Inventory = () => {
+    const chrome = useChrome();
+    const { inventoryId } = useParams();
+    const { search } = useLocation();
+    const searchParams = new URLSearchParams(search);
+    const [activeApp] = useState(searchParams.get('appName') || appList[0].name);
     const store = useStore();
     const history = useHistory();
-    const { params: { inventoryId } } = useRouteMatch('/:inventoryId');
-    const { getRegistry } = useContext(RegistryContext);
-    const { loading, writePermissions } = useSelector(
-        ({ permissionsReducer }) =>
-            ({ loading: permissionsReducer?.loading, writePermissions: permissionsReducer?.writePermissions }),
-        shallowEqual
-    );
+    const dispatch = useDispatch();
+    const writePermissions = useWritePermissions();
     const entityLoaded = useSelector(({ entityDetails }) => entityDetails?.loaded);
+    const entity = useSelector(({ entityDetails }) => entityDetails?.entity);
+    const cloudProvider = useSelector(({ systemProfileStore }) => systemProfileStore?.systemProfile?.cloud_provider);
+    const availableApps = useMemo(() => appList.map((app) => app.name === 'ros' ? {
+        ...app,
+        isVisible: cloudProvider === 'aws'
+    } : app), [cloudProvider]);
+    const clearNotifications = () => dispatch(actions.clearNotifications());
 
     useEffect(() => {
-        insights.chrome?.hideGlobalFilter?.(true);
-        insights.chrome.appAction('system-detail');
+        chrome?.hideGlobalFilter?.(true);
+        chrome.appAction('system-detail');
         clearNotifications();
-
-        // BZ: RHEL cockpit is linking to crc/insights/inventory/{}/insights
-        // which results in a page error, catch that and redirect
-        // TODO Remove me when BZ is fixed
-        const splitUrl = window.location.href.split('/insights');
-        if (splitUrl.length === 3) {
-            window.location = `${splitUrl[0]}/insights${splitUrl[1]}`;
-        }
     }, []);
 
     const additionalClasses = {
-        'ins-c-inventory__detail--general-info': currentApp && currentApp === 'general_information'
+        'ins-c-inventory__detail--general-info': activeApp === 'general_information'
     };
 
     if (entity) {
@@ -51,89 +97,50 @@ const Inventory = ({ entity, currentApp, clearNotifications }) => {
     }
 
     useEffect(() => {
-        insights?.chrome?.appObjectId?.(entity?.id);
+        chrome?.appObjectId?.(entity?.id);
     }, [entity?.id]);
 
+    const onTabSelect = useCallback((_, activeApp, appName) => {
+        searchParams.set('appName', appName);
+        const search = searchParams.toString();
+        history.push({
+            search
+        });
+    }, [searchParams]);
+
     return (
-        <DetailWrapper
+        <InventoryDetail
+            additionalClasses={additionalClasses}
+            hideInvDrawer
+            showDelete={writePermissions}
             hideInvLink
+            hideBack
+            inventoryId={inventoryId}
             showTags
+            showMainSection
+            fallback=""
             store={store}
             history={history}
-            onLoad={({ mergeWithDetail, INVENTORY_ACTION_TYPES }) => {
-                getRegistry().register(mergeWithDetail(entitesDetailReducer(INVENTORY_ACTION_TYPES)));
-            }}
-        >
-            <PageHeader className={classnames('pf-m-light ins-inventory-detail', additionalClasses)} >
-                <Breadcrumb ouiaId="systems-list">
-                    <BreadcrumbItem>
-                        <Link to={routes.table}>Inventory</Link>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem isActive>
-                        <div className="ins-c-inventory__detail--breadcrumb-name">
-                            {
-                                entity ?
-                                    entity.display_name :
-                                    entityLoaded !== true ?
-                                        <Skeleton size={SkeletonSize.xs} /> : inventoryId
-                            }
-                        </div>
-                    </BreadcrumbItem>
-                </Breadcrumb>
-                {
-                    !loading && <InventoryDetailHead
-                        store={store}
-                        history={history}
-                        fallback=""
-                        hideBack
-                        showTags
-                        hideInvLink
-                        showDelete={writePermissions}
-                        hideInvDrawer
-                    />
-                }
-            </PageHeader>
-            <Main className={classnames(additionalClasses)}>
-                <Grid gutter="md">
-                    <GridItem span={12}>
-                        <AppInfo
-                            showTags
-                            fallback=""
-                            store={store}
-                            history={history}
-                        />
-                    </GridItem>
-                </Grid>
-            </Main>
-        </DetailWrapper>
+            isInventoryApp
+            shouldWrapAsPage
+            BreadcrumbWrapper={
+                <BreadcrumbWrapper entity={entity} entityLoaded={entityLoaded} inventoryId={inventoryId}/>
+            }
+            activeApp={activeApp}
+            appList={availableApps}
+            onTabSelect={onTabSelect}
+        />
     );
+};
+
+BreadcrumbWrapper.propTypes = {
+    entity: PropTypes.object,
+    entityLoaded: PropTypes.bool,
+    inventoryId: PropTypes.string
 };
 
 Inventory.contextTypes = {
     store: PropTypes.object
 };
 
-Inventory.propTypes = {
-    history: PropTypes.object,
-    entity: PropTypes.object,
-    loadEntity: PropTypes.func,
-    clearNotifications: PropTypes.func,
-    currentApp: PropTypes.string
-};
-
-function mapStateToProps({ entityDetails }) {
-    const activeApp = entityDetails && entityDetails.activeApp && entityDetails.activeApp.appName;
-    const firstApp = entityDetails && entityDetails.activeApps && entityDetails.activeApps[0];
-    return {
-        entity: entityDetails && entityDetails.entity,
-        currentApp: activeApp || (firstApp && firstApp.name)
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        clearNotifications: () => dispatch(actions.clearNotifications())
-    };
-}
-
-export default routerParams(connect(mapStateToProps, mapDispatchToProps)(Inventory));
+export default Inventory;

@@ -5,8 +5,8 @@ import { PencilAltIcon } from '@patternfly/react-icons';
 import EditButton from './EditButton';
 
 jest.mock('@redhat-cloud-services/frontend-components-utilities/RBACHook', () => ({
-    esModule: true,
-    usePermissions: () => ({ hasAccess: false })
+    __esModule: true,
+    usePermissionsWithContext: () => ({ hasAccess: false })
 }));
 
 describe('EditButton with no access', () => {
@@ -37,21 +37,6 @@ describe('EditButton with no access', () => {
 
         expect(wrapper.find(PencilAltIcon)).toHaveLength(0);
         expect(wrapper.find('a')).toHaveLength(0);
-    });
-
-    it('render on production', () => {
-        const tmp = insights.chrome.isProd;
-        insights.chrome.isProd = true;
-
-        const wrapper = mount(<EditButton
-            onClick={onClick}
-            link={link}
-        />);
-
-        expect(wrapper.find(PencilAltIcon)).toHaveLength(1);
-        expect(wrapper.find('a').props().href).toEqual('http://localhost:5000//some-link');
-
-        insights.chrome.isProd = tmp;
     });
 
     it('render when write permissions are set to true', () => {

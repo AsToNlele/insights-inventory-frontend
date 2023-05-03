@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 import LoadingCard from '../LoadingCard';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import { propertiesSelector } from '../selectors';
-import { editDisplayName, editAnsibleHost, systemProfile } from '../../../store/actions';
+import { editDisplayName, editAnsibleHost } from '../../../store/actions';
 import TextInputModal from '../TextInputModal';
-import { loadEntity } from '../../../store/actions';
 import { Popover, Button } from '@patternfly/react-core';
 import EditButton from '../EditButton';
 import { generalMapper } from '../dataMapper';
@@ -28,7 +27,7 @@ const TitleWithPopover = ({ title, content }) => (
     </React.Fragment>
 );
 
-class SystemCard extends Component {
+class SystemCardCore extends Component {
     state = {
         isDisplayNameModalOpen: false,
         isAnsibleHostModalOpen: false
@@ -41,9 +40,9 @@ class SystemCard extends Component {
         });
     };
 
-    onSubmit = (fn) => (value) => {
+    onSubmit = (fn, origValue) => (value) => {
         const { entity } = this.props;
-        fn(entity.id, value);
+        fn(entity.id, value, origValue);
         this.onCancel();
     }
 
@@ -79,6 +78,7 @@ class SystemCard extends Component {
             hasDisplayName,
             hasAnsibleHostname,
             hasSAP,
+            hasSystemPurpose,
             hasCPUs,
             hasSockets,
             hasCores,
@@ -141,6 +141,7 @@ class SystemCard extends Component {
                                 );
                             }
                         }] : [],
+                        ...hasSystemPurpose ? [{ title: 'System purpose', value: properties.systemPurpose }] : [],
                         ...hasCPUs ? [{ title: 'Number of CPUs', value: properties.cpuNumber }] : [],
                         ...hasSockets ? [{ title: 'Sockets', value: properties.sockets }] : [],
                         ...hasCores ? [{ title: 'Cores per socket', value: properties.coresPerSocket }] : [],
@@ -168,7 +169,8 @@ class SystemCard extends Component {
                     confirmOuiaId="confirm-edit-display-name"
                     inputOuiaId="input-edit-display-name"
                     onCancel={ this.onCancel }
-                    onSubmit={ this.onSubmit(setDisplayName) }
+                    onSubmit={ this.onSubmit(setDisplayName, entity && entity.display_name) }
+                    className ='sentry-mask data-hj-suppress'
                 />
                 <TextInputModal
                     isOpen={ isAnsibleHostModalOpen }
@@ -180,14 +182,15 @@ class SystemCard extends Component {
                     confirmOuiaId="confirm-edit-ansible-name"
                     inputOuiaId="input-edit-ansible-name"
                     onCancel={ this.onCancel }
-                    onSubmit={ this.onSubmit(setAnsibleHost) }
+                    onSubmit={ this.onSubmit(setAnsibleHost, entity && this.getAnsibleHost()) }
+                    className ='sentry-mask data-hj-suppress'
                 />
             </Fragment>
         );
     }
 }
 
-SystemCard.propTypes = {
+SystemCardCore.propTypes = {
     detailLoaded: PropTypes.bool,
     entity: PropTypes.shape({
         // eslint-disable-next-line camelcase
@@ -210,6 +213,7 @@ SystemCard.propTypes = {
             type: PropTypes.string
         })),
         sapIds: PropTypes.arrayOf(PropTypes.string),
+        systemPurpose: PropTypes.string,
         cpuFlags: PropTypes.array
     }),
     setDisplayName: PropTypes.func,
@@ -220,6 +224,7 @@ SystemCard.propTypes = {
     hasDisplayName: PropTypes.bool,
     hasAnsibleHostname: PropTypes.bool,
     hasSAP: PropTypes.bool,
+    hasSystemPurpose: PropTypes.bool,
     hasCPUs: PropTypes.bool,
     hasSockets: PropTypes.bool,
     hasCores: PropTypes.bool,
@@ -227,7 +232,7 @@ SystemCard.propTypes = {
     hasRAM: PropTypes.bool,
     extra: PropTypes.arrayOf(extraShape)
 };
-SystemCard.defaultProps = {
+SystemCardCore.defaultProps = {
     detailLoaded: false,
     entity: {},
     properties: {},
@@ -235,6 +240,7 @@ SystemCard.defaultProps = {
     hasDisplayName: true,
     hasAnsibleHostname: true,
     hasSAP: true,
+    hasSystemPurpose: true,
     hasCPUs: true,
     hasSockets: true,
     hasCores: true,
@@ -249,28 +255,18 @@ TitleWithPopover.propTypes = {
 };
 
 function mapDispatchToProps(dispatch) {
-    const reloadWrapper = (id, event) => {
-        event.payload.then(data => {
-            dispatch(systemProfile(id, { hasItems: true }));
-            dispatch(loadEntity(id, { hasItems: true }, { showTags: true }));
-            return data;
-        });
-
-        return event;
-    };
-
     return {
-        setDisplayName: (id, value) => {
-            dispatch(reloadWrapper(id, editDisplayName(id, value)));
+        setDisplayName: (id, value, origValue) => {
+            dispatch(editDisplayName(id, value, origValue));
         },
 
-        setAnsibleHost: (id, value) => {
-            dispatch(reloadWrapper(id, editAnsibleHost(id, value)));
+        setAnsibleHost: (id, value, origValue) => {
+            dispatch(editAnsibleHost(id, value, origValue));
         }
     };
 }
 
-export default connect(({
+export const SystemCard = connect(({
     entityDetails: {
         entity
     },
@@ -281,4 +277,9 @@ export default connect(({
     entity,
     detailLoaded: systemProfile && systemProfile.loaded,
     properties: propertiesSelector(systemProfile, entity)
-}), mapDispatchToProps)(SystemCard);
+}), mapDispatchToProps)(SystemCardCore);
+
+SystemCard.propTypes = SystemCardCore.propTypes;
+SystemCard.defaultProps = SystemCardCore.defaultProps;
+
+export default SystemCard;

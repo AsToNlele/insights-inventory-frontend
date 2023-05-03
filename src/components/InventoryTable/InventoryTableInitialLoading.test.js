@@ -5,7 +5,7 @@ import InventoryTable from './InventoryTable';
 import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import * as actions from '../../Utilities/constants';
+import * as loadSystems from '../../Utilities/sharedFunctions';
 import SkeletonTable from '@redhat-cloud-services/frontend-components/SkeletonTable';
 import { Pagination } from '@patternfly/react-core';
 
@@ -13,8 +13,10 @@ import ReducerRegistry, { applyReducerHash } from '@redhat-cloud-services/fronte
 import promise from 'redux-promise-middleware';
 import entitiesReducer from '../../store/entities';
 import debounce from 'lodash/debounce';
+import { mockSystemProfile } from '../../__mocks__/hostApi';
 
 jest.mock('lodash/debounce');
+jest.mock('../../Utilities/useFeatureFlag');
 
 describe('InventoryTable - initial loading', () => {
     let initialState;
@@ -38,7 +40,8 @@ describe('InventoryTable - initial loading', () => {
                 }
             }
         };
-        spy = jest.spyOn(actions, 'loadSystems').mockImplementation(() => ({ type: 'reload' }));
+        spy = jest.spyOn(loadSystems, 'loadSystems').mockImplementation(() => ({ type: 'reload' }));
+        mockSystemProfile.onGet().reply(200, { results: [] });
     });
 
     afterEach(() => {

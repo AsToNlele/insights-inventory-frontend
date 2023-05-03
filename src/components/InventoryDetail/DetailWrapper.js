@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Drawer,
     DrawerPanelContent,
@@ -13,16 +13,22 @@ import {
 } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch, useStore } from 'react-redux';
-import { toggleDrawer } from '../../store/actions';
+import { toggleDrawer, loadEntity } from '../../store/actions';
 import { BasicInfo, SystemIssues } from '../InventoryDetailDrawer';
 import FactsInfo from './FactsInfo';
 
-const DetailWrapper = ({ children, hideInvLink, showTags, Wrapper, className, appName, ...props }) => {
+const DetailWrapper = ({ children, hideInvLink, showTags, Wrapper, className, hasAccess, appName, inventoryId, ...props }) => {
     const dispatch = useDispatch();
     const store = useStore();
-    const isExpanded = useSelector(({ entityDetails: { isToggleOpened } }) => isToggleOpened);
-    const entity = useSelector(({ entityDetails: { entity } }) => entity);
-    const loaded = useSelector(({ entityDetails: { loaded } }) => loaded);
+    const entity = useSelector(({ entityDetails }) => entityDetails?.entity);
+    const isExpanded = useSelector(({ entityDetails }) => entityDetails?.isToggleOpened);
+    const loaded = useSelector(({ entityDetails }) => entityDetails?.loaded);
+
+    useEffect(() => {
+        if (inventoryId && !entity || !(entity?.id === inventoryId)) {
+            dispatch(loadEntity(inventoryId, { hasItems: true }, { showTags }));
+        }
+    }, [entity, inventoryId]);
 
     return <Drawer
         className={`ins-c-inventory__drawer ${className || ''}`}
@@ -81,7 +87,9 @@ DetailWrapper.propTypes = {
         'patch'
     ]),
     className: PropTypes.string,
-    Wrapper: PropTypes.elementType
+    Wrapper: PropTypes.elementType,
+    hasAccess: PropTypes.bool,
+    inventoryId: PropTypes.string.isRequired
 };
 
 DetailWrapper.defaultProps = {

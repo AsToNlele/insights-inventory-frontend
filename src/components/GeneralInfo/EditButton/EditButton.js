@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { usePermissions } from '@redhat-cloud-services/frontend-components-utilities/RBACHook';
+import { usePermissionsWithContext } from '@redhat-cloud-services/frontend-components-utilities/RBACHook';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 import { PencilAltIcon } from '@patternfly/react-icons';
 
@@ -23,7 +24,7 @@ InnerButton.propTypes = {
 let permissionsCache = undefined;
 
 const EditButtonUnknownPermissions = (props) => {
-    const { hasAccess } = usePermissions('inventory', [
+    const { hasAccess } = usePermissionsWithContext([
         'inventory:*:*',
         'inventory:hosts:write',
         'inventory:*:write'
@@ -46,7 +47,9 @@ EditButtonUnknownPermissions.propTypes = {
 };
 
 const EditButtonWrapper = ({ writePermissions, ...props }) => {
-    if (insights.chrome.isProd || writePermissions || permissionsCache) {
+    const { isProd } = useChrome();
+
+    if (isProd?.() || writePermissions || permissionsCache) {
         return <InnerButton {...props} />;
     }
 

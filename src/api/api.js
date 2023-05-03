@@ -4,12 +4,13 @@ import flatMap from 'lodash/flatMap';
 
 import instance from '@redhat-cloud-services/frontend-components-utilities/interceptors';
 import { generateFilter, mergeArraysByKey } from '@redhat-cloud-services/frontend-components-utilities/helpers';
-import { HostsApi, TagsApi } from '@redhat-cloud-services/host-inventory-client';
-import { defaultFilters } from '../Utilities/constants';
+import { HostsApi, TagsApi, SystemProfileApi } from '@redhat-cloud-services/host-inventory-client';
+import { allStaleFilters, RHCD_FILTER_KEY, UPDATE_METHOD_KEY } from '../Utilities/constants';
 
 export { instance };
 export const hosts = new HostsApi(undefined, INVENTORY_API_BASE, instance);
 export const tags = new TagsApi(undefined, INVENTORY_API_BASE, instance);
+export const systemProfile = new SystemProfileApi(undefined, INVENTORY_API_BASE, instance);
 
 export const getEntitySystemProfile = (item) => hosts.apiHostGetHostSystemProfileById([item]);
 
@@ -18,7 +19,7 @@ export const mapData = ({ facts = {}, ...oneResult }) => ({
     ...oneResult,
     rawFacts: facts,
     facts: {
-        ...facts.reduce((acc, curr) => ({ ...acc, [curr.namespace]: curr.facts }), {}),
+        ...facts.reduce?.((acc, curr) => ({ ...acc, [curr.namespace]: curr.facts }), {}),
         ...flatMap(facts, (oneFact => Object.values(oneFact)))
         .map(item => typeof item !== 'string' ? ({
             ...item,
@@ -61,13 +62,45 @@ export const constructTags = (tagFilters) => {
     ) || '';
 };
 
+export const calculateSystemProfile = ({ osFilter, rhcdFilter, updateMethodFilter }) => {
+    let systemProfile = {};
+    const osFilterValues = Array.isArray(osFilter) ? osFilter : Object.values(osFilter || {})
+    .flatMap((majorOsVersion) => Object.keys(majorOsVersion));
+
+    if (osFilterValues?.length > 0) {
+        systemProfile.operating_system = {
+            RHEL: {
+                version: {
+                    eq: osFilterValues
+                }
+            }
+        };
+    }
+
+    if (rhcdFilter) {
+        systemProfile[RHCD_FILTER_KEY] = rhcdFilter;
+    }
+
+    if (updateMethodFilter) {
+        systemProfile[UPDATE_METHOD_KEY] =  {
+            eq: updateMethodFilter
+        };
+    }
+
+    return generateFilter({ system_profile: systemProfile });
+};
+
 export const filtersReducer = (acc, filter = {}) => ({
     ...acc,
     ...filter.value === 'hostname_or_id' && { hostnameOrId: filter.filter },
     ...'tagFilters' in filter && { tagFilters: filter.tagFilters },
     ...'staleFilter' in filter && { staleFilter: filter.staleFilter },
     ...'registeredWithFilter' in filter && { registeredWithFilter: filter.registeredWithFilter },
-    ...'osFilter' in filter && { osFilter: filter.osFilter }
+    ...'osFilter' in filter && { osFilter: filter.osFilter },
+    ...'rhcdFilter' in filter && { rhcdFilter: filter.rhcdFilter },
+    ...'lastSeenFilter' in filter && { lastSeenFilter: filter.lastSeenFilter },
+    ...'updateMethodFilter' in filter && { updateMethodFilter: filter.updateMethodFilter },
+    ...'groupHostFilter' in filter && { groupHostFilter: filter.groupHostFilter }
 });
 
 export async function getEntities(items, {
@@ -78,15 +111,18 @@ export async function getEntities(items, {
     page,
     orderBy,
     orderDirection,
-    fields = { system_profile: ['operating_system'] },
+    fields = { system_profile: ['operating_system', /* needed by inventory groups */ 'system_update_method'] },
     ...options
 }, showTags) {
-    if (hasItems && items.length > 0) {
+
+    if (hasItems && items?.length > 0) {
         let data = await hosts.apiHostGetHostById(
             items,
             undefined,
-            undefined,
-            undefined,
+            perPage,
+            page,
+            orderBy,
+            orderDirection,
             undefined,
             undefined,
             { cancelToken: controller && controller.token }
@@ -96,7 +132,7 @@ export async function getEntities(items, {
             try {
                 const result = await hosts.apiHostGetHostSystemProfileById(
                     items,
-                    undefined,
+                    perPage,
                     undefined,
                     undefined,
                     undefined,
@@ -139,33 +175,29 @@ export async function getEntities(items, {
             filters.hostnameOrId,
             undefined,
             undefined,
+            undefined,
+            undefined,
             perPage,
             page,
             orderBy,
             orderDirection,
             filters.staleFilter,
             [
-                ...constructTags(filters.tagFilters),
-                ...options.tags || []
+                ...constructTags(filters?.tagFilters),
+                ...options?.globalFilter?.tags || []
             ],
-            filters.registeredWithFilter,
+            filters?.registeredWithFilter,
             undefined,
             undefined,
             {
                 cancelToken: controller && controller.token,
                 query: {
+                    ...(options?.globalFilter?.filter && generateFilter(options.globalFilter.filter)),
                     ...(options.filter && Object.keys(options.filter).length && generateFilter(options.filter)),
-                    ...(filters.osFilter?.length > 0 && generateFilter({ system_profile: {
-                        operating_system: {
-                            RHEL: {
-                                version: {
-                                    eq: filters.osFilter
-                                }
-                            }
-                        }
-                    } }
-                    )),
-                    ...(fields && Object.keys(fields).length && generateFilter(fields, 'fields'))
+                    ...(calculateSystemProfile(filters)),
+                    ...(fields && Object.keys(fields).length && generateFilter(fields, 'fields')),
+                    ...filters?.lastSeenFilter?.updatedStart && { updated_start: filters.lastSeenFilter.updatedStart },
+                    ...filters?.lastSeenFilter?.updatedEnd && { updated_end: filters.lastSeenFilter.updatedEnd }
                 }
             }
         )
@@ -198,39 +230,28 @@ export function getTags(systemId, search, { pagination } = { pagination: {} }) {
     );
 }
 
-export function getAllTags(search, { filters, pagination, ...options } = { pagination: {} }) {
-    const {
-        tagFilters,
-        staleFilter,
-        registeredWithFilter,
-        osFilter
-    } = filters ? filters.reduce(filtersReducer, defaultFilters) : defaultFilters;
+export function getAllTags(search, pagination = {}) {
     return tags.apiTagGetTags(
-        [
-            ...tagFilters ? constructTags(tagFilters) : [],
-            ...options.tags || []
-        ],
+        [],
         'tag',
         'ASC',
-        (pagination && pagination.perPage) || 10,
-        (pagination && pagination.page) || 1,
-        staleFilter,
+        pagination.perPage || 10,
+        pagination.page || 1,
+        //TODO: ask the backend to return all tags by default.
+        allStaleFilters,
         search,
-        registeredWithFilter,
         undefined,
-        {
-            query: {
-                ...(osFilter?.length > 0 && generateFilter({ system_profile: {
-                    operating_system: {
-                        RHEL: {
-                            version: {
-                                eq: osFilter
-                            }
-                        }
-                    }
-                } }
-                ))
-            }
-        }
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
     );
+}
+
+export function getOperatingSystems(params = []) {
+    return systemProfile.apiSystemProfileGetOperatingSystem(...params);
 }

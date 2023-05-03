@@ -1,140 +1,77 @@
 import { createContext } from 'react';
-import { loadEntities } from '../store/actions';
+import { usePermissionsWithContext } from '@redhat-cloud-services/frontend-components-utilities/RBACHook';
+import { INVENTORY_WRITE_PERMISSIONS } from '../constants';
+
 export const TEXT_FILTER = 'hostname_or_id';
 export const TEXTUAL_CHIP = 'textual';
 export const TAG_CHIP = 'tags';
 export const STALE_CHIP = 'staleness';
 export const REGISTERED_CHIP = 'registered_with';
 export const OS_CHIP = 'operating_system';
+export const RHCD_FILTER_KEY = 'rhc_client_id';
+export const UPDATE_METHOD_KEY = 'system_update_method';
+export const LAST_SEEN_CHIP = 'last_seen';
+export const HOST_GROUP_CHIP = 'host_group';
+
+export function subtractDate(days) {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+    return date.toISOString();
+}
+
 export const staleness = [
     { label: 'Fresh', value: 'fresh' },
     { label: 'Stale', value: 'stale' },
-    { label: 'Stale warning', value: 'stale_warning' }
+    { label: 'Stale warning', value: 'stale_warning' },
+    { label: 'Unknown', value: 'unknown' }
 ];
-export const registered = [{ label: 'Insights', value: 'insights' }];
-export const InventoryContext = createContext({});
-export const defaultFilters = {
-    staleFilter: ['fresh', 'stale'],
-    registeredWithFilter: ['insights']
-};
 
-export const operatingSystems = [
+export const currentDate = new Date().toISOString();
+export const lastSeenItems = [
     {
-        label: 'RHEL 9.0',
-        value: '9.0'
+        value: { updatedStart: subtractDate(1), updatedEnd: currentDate, mark: 'last24' },
+        label: 'Within the last 24 hours'    },
+    {
+        value: {  updatedEnd: subtractDate(1), mark: '24more' },
+        label: 'More than 1 day ago'
+
     },
     {
-        label: 'RHEL 8.6',
-        value: '8.6'
+        value: { updatedEnd: subtractDate(7), mark: '7more' },
+        label: 'More than 7 days ago'
     },
     {
-        label: 'RHEL 8.5',
-        value: '8.5'
+        value: { updatedEnd: subtractDate(15), mark: '15more' },
+        label: 'More than 15 days ago'
     },
     {
-        label: 'RHEL 8.4',
-        value: '8.4'
-    },
-    {
-        label: 'RHEL 8.3',
-        value: '8.3'
-    },
-    {
-        label: 'RHEL 8.2',
-        value: '8.2'
-    },
-    {
-        label: 'RHEL 8.1',
-        value: '8.1'
-    },
-    {
-        label: 'RHEL 8.0',
-        value: '8.0'
-    },
-    {
-        label: 'RHEL 7.9',
-        value: '7.9'
-    },
-    {
-        label: 'RHEL 7.8',
-        value: '7.8'
-    },
-    {
-        label: 'RHEL 7.7',
-        value: '7.7'
-    },
-    {
-        label: 'RHEL 7.6',
-        value: '7.6'
-    },
-    {
-        label: 'RHEL 7.5',
-        value: '7.5'
-    },
-    {
-        label: 'RHEL 7.4',
-        value: '7.4'
-    },
-    {
-        label: 'RHEL 7.3',
-        value: '7.3'
-    },
-    {
-        label: 'RHEL 7.2',
-        value: '7.2'
-    },
-    {
-        label: 'RHEL 7.1',
-        value: '7.1'
-    },
-    {
-        label: 'RHEL 7.0',
-        value: '7.0'
-    },
-    {
-        label: 'RHEL 6.10',
-        value: '6.10'
-    },
-    {
-        label: 'RHEL 6.9',
-        value: '6.9'
-    },
-    {
-        label: 'RHEL 6.8',
-        value: '6.8'
-    },
-    {
-        label: 'RHEL 6.7',
-        value: '6.7'
-    },
-    {
-        label: 'RHEL 6.6',
-        value: '6.6'
-    },
-    {
-        label: 'RHEL 6.5',
-        value: '6.5'
-    },
-    {
-        label: 'RHEL 6.4',
-        value: '6.4'
-    },
-    {
-        label: 'RHEL 6.3',
-        value: '6.3'
-    },
-    {
-        label: 'RHEL 6.2',
-        value: '6.2'
-    },
-    {
-        label: 'RHEL 6.1',
-        value: '6.1'
-    },
-    {
-        label: 'RHEL 6.0',
-        value: '6.0'
+        value: { updatedEnd: subtractDate(30), mark: '30more' },
+        label: 'More than 30 days ago'
     }
+    //Temporarily disabled
+    // {
+    //     value: { mark: 'custom' },
+    //     label: 'Custom'
+    // }
+];
+export const registered = [
+    { label: 'insights-client', value: 'puptoo', idName: 'Insights id', idValue: 'insights_id' },
+    { label: 'subscription-manager', value: 'rhsm-conduit',
+        idName: 'Subscription manager id', idValue: 'subscription_manager_id' },
+    { label: 'Satellite/Discovery', value: 'yupana' },
+    { label: 'insights-client not connected', value: '!puptoo' }
+];
+export const InventoryContext = createContext({});
+
+export const rhcdOptions = [
+    { label: 'Active', value: 'not_nil' },
+    { label: 'Inactive', value: 'nil' }
+];
+
+export const updateMethodOptions = [
+    { label: 'yum', value: 'yum' },
+    { label: 'dnf', value: 'dnf' },
+    { label: 'rpm-ostree', value: 'rpm-ostree' }
 ];
 
 export function filterToGroup(filter = [], valuesKey = 'values') {
@@ -181,7 +118,8 @@ export function reduceFilters(filters = []) {
             };
         }
 
-        const foundKey = ['staleFilter', 'registeredWithFilter', 'osFilter', '']
+        const foundKey = ['staleFilter', 'registeredWithFilter', 'osFilter', 'rhcdFilter', 'updateMethodFilter',
+            'lastSeenFilter', '']
         .find(item => Object.keys(oneFilter).includes(item));
 
         return {
@@ -190,33 +128,9 @@ export function reduceFilters(filters = []) {
         };
     }, {
         textFilter: '',
-        tagFilters: {},
-        ...defaultFilters
+        tagFilters: {}
     });
 }
-
-export const loadSystems = (options, showTags, getEntities) => {
-    const limitedItems = options?.items?.length > options.per_page ? options?.items?.slice(
-        (options?.page - 1) * options.per_page, options?.page * options.per_page
-    ) : options?.items;
-
-    const config = {
-        ...options.hasItems && {
-            sortBy: options?.sortBy?.key,
-            orderDirection: options?.sortBy?.direction?.toUpperCase()
-        },
-        ...options,
-        filters: options?.filters || options?.activeFilters,
-        orderBy: options?.orderBy || options?.sortBy?.key,
-        orderDirection: options?.orderDirection?.toUpperCase() || options?.sortBy?.direction?.toUpperCase(),
-        ...limitedItems?.length > 0 && {
-            itemsPage: options?.page,
-            page: 1
-        }
-    };
-
-    return loadEntities(limitedItems, config, { showTags }, getEntities);
-};
 
 export const reloadWrapper = (event, callback) => {
     event.payload.then(data => {
@@ -229,7 +143,16 @@ export const reloadWrapper = (event, callback) => {
 
 export const isEmpty = (check) => !check || check?.length === 0;
 
-export const generateFilter = (status, source, tagsFilter, filterbyName, operatingSystem) => ([
+export const generateFilter = (status,
+    source,
+    tagsFilter,
+    filterbyName,
+    operatingSystem,
+    rhcdFilter,
+    updateMethodFilter,
+    hostGroup,
+    lastSeenFilter
+) => ([
     !isEmpty(status) && {
         staleFilter: Array.isArray(status) ? status : [status]
     },
@@ -251,5 +174,26 @@ export const generateFilter = (status, source, tagsFilter, filterbyName, operati
     },
     !isEmpty(operatingSystem) && {
         osFilter: Array.isArray(operatingSystem) ? operatingSystem : [operatingSystem]
+    },
+    !isEmpty(rhcdFilter) && {
+        rhcdFilter: Array.isArray(rhcdFilter) ? rhcdFilter : [rhcdFilter]
+    },
+    !isEmpty(lastSeenFilter) && {
+        lastSeenFilter: Array.isArray(lastSeenFilter)
+            ? lastSeenItems.filter((item)=> item.value.mark === lastSeenFilter[0])[0].value : [lastSeenFilter]
+    },
+    !isEmpty(updateMethodFilter) && {
+        updateMethodFilter: Array.isArray(updateMethodFilter) ? updateMethodFilter : [updateMethodFilter]
+    },
+    !isEmpty(hostGroup) && {
+        hostGroupFilter: Array.isArray(hostGroup) ? hostGroup : [hostGroup]
     }
 ].filter(Boolean));
+
+export const useWritePermissions = () => {
+    const { hasAccess } = usePermissionsWithContext(INVENTORY_WRITE_PERMISSIONS);
+
+    return hasAccess;
+};
+
+export const allStaleFilters = ['fresh', 'stale', 'stale_warning', 'unknown'];

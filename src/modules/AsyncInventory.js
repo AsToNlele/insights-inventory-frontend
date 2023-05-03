@@ -1,52 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
-import LoadingFallback from '../components/SpinnerFallback';
+import { RBACProvider } from '@redhat-cloud-services/frontend-components/RBACProvider';
 
-const AsyncInventory = ({ componentName, onLoad, store, history, innerRef, ...props }) => {
-    const [Component, setComponent] = useState();
+import * as storeMod from '../store/redux';
+import * as utils from '../Utilities/index';
+import * as apiMod from '../api/index';
+import RenderWrapper from '../Utilities/Wrapper';
+const { mergeWithDetail, ...rest } = storeMod;
+
+const AsyncInventory = ({ component, onLoad, store, history, innerRef, ...props }) => {
     useEffect(() => {
-        (async () => {
-            const { inventoryConnector, mergeWithDetail, shared, api, ...rest } = await Promise.all([
-                import(
-                    /* webpackChunkName: "inventoryConnector" */
-                    '../Utilities/inventoryConnector'
-                ),
-                import(/* webpackChunkName: "inventoryRedux" */ '../store/redux'),
-                import(/* webpackChunkName: "inventoryShared" */ '../Utilities/index'),
-                import(/* webpackChunkName: "inventoryApi" */ '../api/index')
-            ]).then(([{ inventoryConnector }, { mergeWithDetail, ...rest }, shared, api]) => ({
-                inventoryConnector,
-                mergeWithDetail,
-                shared,
-                api,
-                ...rest
-            }));
-            const { [componentName]: InvCmp } = inventoryConnector(store, undefined, undefined, true);
-            onLoad({
-                ...rest,
-                ...shared,
-                api,
-                mergeWithDetail
-            });
-            setComponent(() => InvCmp);
-        })();
-    }, [componentName]);
+        onLoad?.({
+            ...rest,
+            ...utils,
+            api: apiMod,
+            mergeWithDetail
+        });
+    }, []);
 
     return (
-        <Provider store={store}>
-            <Router history={history}>
-                {Component && <Component {...props} fallback={LoadingFallback} ref={innerRef} />}
-            </Router>
-        </Provider>
+        <RBACProvider appName="inventory">
+            <Provider store={store}>
+                <Router history={history}>
+                    <RenderWrapper
+                        { ...props }
+                        isRbacEnabled
+                        inventoryRef={ innerRef }
+                        store={ store }
+                        cmp={ component } />
+                </Router>
+            </Provider>
+        </RBACProvider>
     );
 };
 
 AsyncInventory.propTypes = {
     store: PropTypes.object,
     onLoad: PropTypes.func,
-    componentName: PropTypes.string,
+    component: PropTypes.elementType.isRequired,
     history: PropTypes.object,
     innerRef: PropTypes.shape({
         current: PropTypes.any
