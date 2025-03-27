@@ -152,7 +152,7 @@ describe('with default parameters', () => {
     };
 
     _.zip(
-      ['display_name', 'operating_system', 'updated'],
+      ['display_name', 'operating_system', 'last_check_in'],
       SORTABLE_HEADERS
     ).forEach(([category, label]) => {
       SORTING_ORDERS.forEach((order) => {

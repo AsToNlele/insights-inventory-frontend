@@ -37,7 +37,7 @@ const TABLE_HEADERS_SORTING_KEYS = [
   'display_name',
   'group_name',
   'operating_system',
-  'last_seen',
+  'last_check_in',
 ];
 const DEFAULT_FILTER_NAMES = [
   'Name',
@@ -154,7 +154,7 @@ const initialState = {
     operatingSystemsLoaded: false,
     groups: [],
     invConfig: {},
-    sortBy: { key: 'updated', direction: 'desc' },
+    sortBy: { key: 'last_check_in', direction: 'desc' },
   },
 };
 

@@ -33,7 +33,7 @@ export const defaultState = {
   groups: [],
   invConfig: {},
   sortBy: {
-    key: 'updated',
+    key: 'last_check_in',
     direction: 'desc',
   },
 };
@@ -88,8 +88,8 @@ export const DEFAULT_COLUMNS = [
     props: { width: 10 },
   },
   {
-    key: 'updated',
-    sortKey: 'updated',
+    key: 'last_check_in',
+    sortKey: 'last_check_in',
     title: 'Last seen',
     // eslint-disable-next-line react/display-name
     renderFunc: (

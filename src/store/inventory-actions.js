@@ -24,6 +24,7 @@ import {
   getGroups,
 } from '../components/InventoryGroups/utils/api';
 import { deleteHostById, patchHostById } from '../api/hostInventoryApi';
+import { defaultState } from './entities';
 
 export const loadEntities = (
   items = [],
@@ -65,8 +66,10 @@ export const loadEntities = (
         ...(isFilterDisabled('host_group') && { hostGroupFilter: undefined }),
       };
 
-  const orderBy = config.orderBy || 'updated';
-  const orderDirection = config.orderDirection?.toUpperCase() || 'DESC';
+  const orderBy = config.orderBy || defaultState.sortBy.direction;
+  const orderDirection =
+    config.orderDirection?.toUpperCase() ||
+    defaultState.sortBy.direction.toUpperCase();
 
   const lastDateRequest = Date.now();
 
