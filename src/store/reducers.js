@@ -10,7 +10,8 @@ import systemProfileStore from './systemProfileStore';
 import { applyReducerHash } from '@redhat-cloud-services/frontend-components-utilities/ReducerRegistry';
 import { mergeArraysByKey } from '@redhat-cloud-services/frontend-components-utilities/helpers';
 import { notificationsReducer } from '@redhat-cloud-services/frontend-components-notifications/redux';
-import entitiesReducer, { defaultState as entitiesDefault } from './entities';
+import entitiesReducer from './entities';
+import { defaultState as entitiesDefault } from './constants';
 import entityDetailsReducer, {
   entityDefaultState as entityDefault,
   updateEntity,

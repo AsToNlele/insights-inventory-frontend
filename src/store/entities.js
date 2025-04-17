@@ -25,18 +25,7 @@ import { Tooltip } from '@patternfly/react-core';
 import { verifyCulledReporter } from '../Utilities/sharedFunctions';
 import { fitContent } from '@patternfly/react-table';
 import isEmpty from 'lodash/isEmpty';
-
-export const defaultState = {
-  loaded: false,
-  tagsLoaded: false,
-  allTagsLoaded: false,
-  groups: [],
-  invConfig: {},
-  sortBy: {
-    key: 'updated',
-    direction: 'desc',
-  },
-};
+import { defaultState } from './constants';
 
 export const DEFAULT_COLUMNS = [
   {
@@ -88,8 +77,8 @@ export const DEFAULT_COLUMNS = [
     props: { width: 10 },
   },
   {
-    key: 'updated',
-    sortKey: 'updated',
+    key: 'last_check_in',
+    sortKey: 'last_check_in',
     title: 'Last seen',
     // eslint-disable-next-line react/display-name
     renderFunc: (
